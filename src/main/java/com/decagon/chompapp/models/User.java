@@ -1,0 +1,79 @@
+package com.decagon.chompapp.models;
+
+import com.decagon.chompapp.enums.Gender;
+
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Size;
+import java.time.LocalDate;
+
+import java.util.List;
+import java.util.Set;
+
+@Entity
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor @Builder
+@Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}),  @UniqueConstraint(columnNames = {"email"})})
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+
+    @Size(min = 2, max=64, message = "firstname must be at least two letter long")
+    @Column(nullable = false)
+    private String firstName;
+
+    @Size(min = 2, max=64, message = "lastname must be at least two letter long")
+    @Column(nullable = false)
+    private String lastName;
+
+
+    @Size(min = 2, max=64, message = "lastname must be at least two letter long")
+    @Column(nullable = false)
+    private String username;
+
+    @Email
+    private String email;
+
+    @Size(min = 8, max = 16, message = "password must be at least 8 letters long")
+    private String password;
+
+    @DateTimeFormat(pattern = "dd-mm-yyyy")
+    private LocalDate dateOfBirth;
+
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
+
+//    @Enumerated(EnumType.STRING)
+//    private Role role;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "roleId"))
+    private Set<Role> roles;
+
+
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private Wallet wallet;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> addressBook;
+
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Order> orders;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    private Set<Product> favourites;
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private Cart cart;
+
+}
