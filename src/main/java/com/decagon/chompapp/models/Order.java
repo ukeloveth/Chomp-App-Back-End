@@ -1,5 +1,6 @@
 package com.decagon.chompapp.models;
 
+
 import javax.persistence.*;
 
 
@@ -21,4 +22,5 @@ public class Order {
     @ManyToOne
 //    @JoinColumn(name = "user_id", referencedColumnName = "userId")
     private User user;
+
 }

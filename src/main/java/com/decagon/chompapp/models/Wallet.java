@@ -1,5 +1,6 @@
 package com.decagon.chompapp.models;
 
+
 import javax.persistence.*;
 
 @Entity
@@ -12,4 +13,5 @@ public class Wallet {
 
     @OneToOne
     private User user;
+
 }

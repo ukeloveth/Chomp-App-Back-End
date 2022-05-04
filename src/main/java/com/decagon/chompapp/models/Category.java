@@ -1,5 +1,6 @@
 package com.decagon.chompapp.models;
 
+
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,6 +26,7 @@ public class Category {
     cascade = CascadeType.ALL)
 
     private List<Product> productList  = new ArrayList<>();
+
 
 
 }

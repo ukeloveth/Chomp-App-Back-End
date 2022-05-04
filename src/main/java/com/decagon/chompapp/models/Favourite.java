@@ -1,3 +1,4 @@
+
 //package com.decagon.chompapp.models;
 //
 //import javax.persistence.*;
@@ -20,3 +21,6 @@
 //    @JoinColumn(name = "product_id")
 //    private Product product;
 //}
+
+
+

@@ -1,5 +1,6 @@
 package com.decagon.chompapp.models;
 
+
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,5 +38,6 @@ public class Product {
 
     @ManyToOne
     private Category category;
+
 
 }

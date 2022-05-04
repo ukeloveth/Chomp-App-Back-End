@@ -1,5 +1,6 @@
 package com.decagon.chompapp.models;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class Cart {
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
+
 
 
 
