@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @AllArgsConstructor @NoArgsConstructor @Builder
 @Table(name = "users", uniqueConstraints = {@UniqueConstraint(columnNames = {"username"}),  @UniqueConstraint(columnNames = {"email"})})
 public class User {
@@ -77,5 +78,8 @@ public class User {
 
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Cart cart;
+
+    private String userConfirmationToken;
+    private Boolean isEnabled;
 
 }
