@@ -47,24 +47,25 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
+                        "swagger-resources/**", "/swagger-ui.html", "webjars/**")
+                .permitAll()
+                .antMatchers("/home", "/company", "/faq",
+                        "/contact", "/signup", "/confirmRegistration", "/h2-console/**")
+                .permitAll()
                 .antMatchers("/admin").hasAuthority("ADMIN")
                 .antMatchers("/orders").hasAuthority("ADMIN")
                 .antMatchers( "/checkout", "/users",
                         "/wallet", "/order-history",
                         "/favorites")
                 .hasAnyAuthority("ADMIN", "PREMIUM")
-                .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
-                        "swagger-resources/**", "/swagger-ui.html", "webjars/**")
-                .permitAll()
-                .antMatchers("/home", "/company", "/faq",
-                        "/contact")
-                .permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
                 .httpBasic();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.headers().frameOptions().disable();
     }
 
     @Override

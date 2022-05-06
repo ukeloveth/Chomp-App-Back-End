@@ -79,7 +79,9 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Cart cart;
 
-    private String userConfirmationToken;
+    @Size(min = 30, max = 30)
+    private String confirmationToken;
+
     private Boolean isEnabled;
 
 }
