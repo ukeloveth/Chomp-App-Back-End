@@ -95,4 +95,5 @@ class RegistrationServiceImplTest {
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
 
     }
+
 }

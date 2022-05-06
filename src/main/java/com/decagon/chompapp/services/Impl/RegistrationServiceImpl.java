@@ -63,6 +63,7 @@ public class RegistrationServiceImpl implements RegistrationService {
                 + "or you have not made the request.</p>";
         emailSender.send(signUpDto.getEmail(), content);
 
+
         return new ResponseEntity<>("User registered successfully. Kindly check your mail inbox or junk folder to verify your account", HttpStatus.OK );
     }
 
