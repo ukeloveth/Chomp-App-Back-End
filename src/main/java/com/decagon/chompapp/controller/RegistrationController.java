@@ -18,7 +18,6 @@ public class RegistrationController {
 //    @Autowired
     private RegistrationService registrationService;
 
-
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignUpDto signUpDto, HttpServletRequest request){
         return registrationService.registerUser(signUpDto,request);

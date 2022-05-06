@@ -27,7 +27,6 @@ public class RegistrationServiceImpl implements RegistrationService {
     private RoleRepository roleRepository;
     private EmailSenderService emailSender;
 
-
     @Override
     public ResponseEntity<String> registerUser(SignUpDto signUpDto, HttpServletRequest request) {
         if(userRepository.existsByUsername(signUpDto.getUsername())){

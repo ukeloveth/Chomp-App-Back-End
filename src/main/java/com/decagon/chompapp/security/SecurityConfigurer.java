@@ -66,6 +66,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.headers().frameOptions().disable();
+
     }
 
     @Override

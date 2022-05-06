@@ -93,7 +93,6 @@ class RegistrationServiceImplTest {
         Assertions.assertThat(user.getIsEnabled()).isEqualTo(true);
         Assertions.assertThat(responseEntity.getBody()).isEqualTo("Account verification successful");
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
-
     }
 
 }
