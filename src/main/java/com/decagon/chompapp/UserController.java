@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("users")
@@ -13,8 +14,9 @@ public class UserController {
 
     private UserService userService;
 
-    @PostMapping("/edit/{id}")
-    public ResponseEntity<String> editUserDetails(@PathVariable Long id, @RequestBody UserDto userDto) {
-        return userService.editUserDetails(id, userDto);
+
+    @PutMapping("/edit")
+    public ResponseEntity<String> editUserDetails(@RequestBody UserDto userDto) {
+        return userService.editUserDetails(userDto);
     }
 }
