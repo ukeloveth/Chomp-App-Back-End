@@ -1,6 +1,10 @@
 package com.decagon.chompapp.services;
 
-public interface EmailSenderService {
-    void send(String to, String email);
+import com.decagon.chompapp.dto.EmailSenderDto;
+import org.springframework.http.ResponseEntity;
 
+import javax.mail.MessagingException;
+
+public interface EmailSenderService {
+    ResponseEntity<String> send(EmailSenderDto emailSenderDto) throws MessagingException;
 }
