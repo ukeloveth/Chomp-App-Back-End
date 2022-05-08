@@ -59,7 +59,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/home", "/company", "/faq",
 
-                        "/contact", "/login", "/logout", "/forgot_password", "/h2-console", "users/edit")
+                        "/contact", "/login", "/logout", "/forgot_password", "/h2-console")
 
                 .permitAll()
                 .anyRequest()
