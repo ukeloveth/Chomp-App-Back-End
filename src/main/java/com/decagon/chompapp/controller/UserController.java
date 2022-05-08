@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 
 @RequiredArgsConstructor
 @RestController
@@ -16,7 +18,7 @@ public class UserController {
 
 
     @PutMapping("/edit")
-    public ResponseEntity<String> editUserDetails(@RequestBody EditUserDto editUserDto) {
+    public ResponseEntity<String> editUserDetails(@Valid @RequestBody EditUserDto editUserDto) {
         return userService.editUserDetails(editUserDto);
     }
 }
