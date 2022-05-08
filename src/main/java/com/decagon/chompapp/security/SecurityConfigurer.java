@@ -55,11 +55,11 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/favorites")
                 .hasAnyAuthority("ADMIN", "PREMIUM")
                 .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
-                        "swagger-resources/**", "/swagger-ui.html", "webjars/**", "users/edit/**")
+                        "swagger-resources/**", "/swagger-ui.html", "webjars/**")
                 .permitAll()
                 .antMatchers("/home", "/company", "/faq",
 
-                        "/contact", "/login", "/logout", "/forgot_password", "/h2-console")
+                        "/contact", "/login", "/logout", "/forgot_password", "/h2-console", "users/edit")
 
                 .permitAll()
                 .anyRequest()

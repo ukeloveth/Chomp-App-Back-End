@@ -1,6 +1,6 @@
 package com.decagon.chompapp.services.Impl;
 
-import com.decagon.chompapp.dto.UserDto;
+import com.decagon.chompapp.dto.EditUserDto;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repository.UserRepository;
 import com.decagon.chompapp.services.UserService;
@@ -15,18 +15,18 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public ResponseEntity<String> editUserDetails(UserDto userDto) {
+    public ResponseEntity<String> editUserDetails(EditUserDto editUserDto) {
         String person = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByUsernameOrEmail(person, person).get();
-        if (userDto.getFirstName() != null)
-            user.setFirstName(userDto.getFirstName());
-        if (userDto.getLastName() != null)
-            user.setLastName(userDto.getLastName());
-        if (userDto.getEmail() != null)
-            user.setEmail(userDto.getEmail());
+        if (editUserDto.getFirstName() != null)
+            user.setFirstName(editUserDto.getFirstName());
+        if (editUserDto.getLastName() != null)
+            user.setLastName(editUserDto.getLastName());
+        if (editUserDto.getGender() != null)
+            user.setGender(editUserDto.getGender());
 
         userRepository.save(user);
 
