@@ -1,6 +1,8 @@
 package com.decagon.chompapp.security;
 
+import com.decagon.chompapp.services.BlackListService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,6 +23,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private BlackListService blackListService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -28,6 +34,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // get jwtToken from http Request
         String token = getJwtFromRequest(request);
+        if (blackListService.tokenExist(token)){
+            throw new BadCredentialsException("Token blacklised!");
+        }
         // validate token
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
         // get username from token
