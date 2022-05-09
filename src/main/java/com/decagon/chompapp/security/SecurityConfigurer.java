@@ -53,7 +53,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/wallet", "/order-history",
                         "/favorites")
                 .hasAnyAuthority("ADMIN", "PREMIUM")
-                .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
+                .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "/swagger-ui/**",
                         "swagger-resources/**", "/swagger-ui.html", "webjars/**")
                 .permitAll()
                 .antMatchers("/home", "/company", "/faq",
@@ -65,6 +65,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .httpBasic();
 
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.headers().frameOptions().disable();
     }
 
     @Override
