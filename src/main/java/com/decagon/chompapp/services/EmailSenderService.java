@@ -5,7 +5,12 @@ import org.springframework.http.ResponseEntity;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 
+import com.decagon.chompapp.dto.EmailSenderDto;
+import org.springframework.http.ResponseEntity;
+
+import javax.mail.MessagingException;
+
 public interface EmailSenderService {
-    void send(String to, String email);
+    ResponseEntity<String> send(EmailSenderDto emailSenderDto) throws MessagingException;
     void sendRegistrationEmail(String email, String token) throws MalformedURLException;
 }
