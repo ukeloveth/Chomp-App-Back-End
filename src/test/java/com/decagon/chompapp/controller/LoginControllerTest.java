@@ -3,10 +3,10 @@ package com.decagon.chompapp.controller;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import org.junit.Assert;
 import com.decagon.chompapp.dto.LoginDto;
 import com.decagon.chompapp.services.LoginService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +53,7 @@ class LoginControllerTest {
         when(loginService.logout(any())).thenReturn(null);
 
         ResponseEntity<?> result = loginController.logout(null);
-        Assert.assertEquals(null, result);
+        Assertions.assertNull(result);
     }
 
 }
