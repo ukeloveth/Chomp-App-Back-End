@@ -52,15 +52,17 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "swagger-resources/**", "/swagger-ui.html", "webjars/**")
                 .permitAll()
                 .antMatchers("/home", "/company", "/faq",
-                        "/contact", "/signup", "/confirmRegistration", "/h2-console/**", "/login", "/logout", "/forgot_password")
+                        "/contact", "/signup", "/confirmRegistration",
+                        "/h2-console/**", "/login", "/logout", "/forgot_password",
+                        "/api/v1/auth/login", "/verifyEmail")
 
                 .permitAll()
-                .antMatchers("/admin").hasAuthority("ADMIN")
-                .antMatchers("/orders").hasAuthority("ADMIN")
+                .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/orders").hasAuthority("ROLE_ADMIN")
                 .antMatchers( "/checkout", "/users",
                         "/wallet", "/order-history",
                         "/favorites", "/verifyEmail")
-                .hasAnyAuthority("ADMIN", "PREMIUM")
+                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PREMIUM")
                 .anyRequest()
                 .authenticated()
                 .and()

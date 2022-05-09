@@ -63,14 +63,16 @@ public class RegistrationServiceImpl implements RegistrationService {
         return new ResponseEntity<>("User registered successfully. Kindly check your mail inbox or junk folder to verify your account", HttpStatus.OK );
     }
     @Override
-    public ResponseEntity<String> verifyRegistration(String email, HttpServletRequest request) throws MalformedURLException {
-        var userCheck = userRepository.findByEmail(email);
+    public ResponseEntity<String> verifyRegistration(long id) throws MalformedURLException {
+        Optional<User> userCheck = userRepository.findById(id);
         if (userCheck.isPresent()) {
-            var user = userCheck.get();
+            User user = userCheck.get();
             String token = jwtTokenProvider.generateSignUpConfirmationToken(user.getEmail());
             user.setConfirmationToken(token);
             userRepository.save(user);
             emailSender.sendRegistrationEmail(user.getEmail(), token);
+        } else {
+            throw new RuntimeException("User with this email not found");
         }
             return new ResponseEntity<>("Kindly check your mail inbox or junk folder to verify your account", HttpStatus.OK );
     }

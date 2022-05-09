@@ -17,7 +17,7 @@ public interface RegistrationService {
 
     ResponseEntity<String> verifyRegistration(User user, HttpServletRequest request) throws MalformedURLException;
 
-    ResponseEntity<String> verifyRegistration(String email, HttpServletRequest request) throws MalformedURLException;
+    ResponseEntity<String> verifyRegistration(long id) throws MalformedURLException;
 
     ResponseEntity<String> confirmRegistration(String token);
 }

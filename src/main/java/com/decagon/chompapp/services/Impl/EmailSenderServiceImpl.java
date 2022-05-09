@@ -61,9 +61,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         String content = "Hello,\n"
                 + "Congrats!!! Your registration was successful.\n"
                 + "Click the link below to verify your account:\n"
-                + "<a href=\"" + url + "\">Verify my account</a>\n"
-                + "<br>\n"
-                + "Ignore this email if you did not register, "
+                + url
+//                + "\">Verify my account</a>\n"
+                + "\n Ignore this email if you did not register, "
                 + "or you have not made the request.";
 
         send(new EmailSenderDto(email, "Chomp: Confirm Registration", content));

@@ -1,10 +1,12 @@
 package com.decagon.chompapp.services.Impl;
 
+import com.decagon.chompapp.controller.RegistrationController;
 import com.decagon.chompapp.dto.SignUpDto;
 import com.decagon.chompapp.models.Role;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repository.RoleRepository;
 import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.EmailSenderService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +16,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -37,6 +41,8 @@ class RegistrationServiceImplTest {
     private RoleRepository roleRepository;
     @Mock
     private EmailSenderService emailSender;
+    @Mock
+    JwtTokenProvider jwtTokenProvider;
 
     @Mock
     private HttpServletRequest request;
@@ -55,6 +61,9 @@ class RegistrationServiceImplTest {
         role = Role.builder().name("ROLE_PREMIUM").build();
         user = User.builder().firstName("Stanley").lastName("Nkannebe").username("funkystan")
                 .email("funkystan@gmail.com").password("12345").build();
+//        URL url = WebMvcLinkBuilder.linkTo(
+//                WebMvcLinkBuilder.methodOn(RegistrationController.class).confirmRegistration(token)
+//        ).toUri().toURL();
 
     }
 
@@ -78,10 +87,10 @@ class RegistrationServiceImplTest {
         Mockito.when(userRepository.existsByUsername(signUpDto.getUsername())).thenReturn(false);
         Mockito.when(userRepository.existsByEmail(signUpDto.getEmail())).thenReturn(false);
         Mockito.when(roleRepository.findByName("ROLE_PREMIUM")).thenReturn(Optional.of(role));
-        Mockito.when(request.getRequestURL()).thenReturn(new StringBuffer("localhost:8080/login"));
-        Mockito.when(request.getServletPath()).thenReturn("localhost:8080/login");
+//        Mockito.when(request.getRequestURL()).thenReturn(new StringBuffer("localhost:8080/signup"));
+//        Mockito.when(request.getServletPath()).thenReturn("localhost:8080/signup");
+        Mockito.when(jwtTokenProvider.generateSignUpConfirmationToken(any())).thenReturn("khvvjbhilhliehwilhewlbjdhbiluhweiuh");
         Mockito.when(userRepository.save(any())).thenReturn(user);
-
         ResponseEntity<String> responseEntity = registrationService.registerUser(signUpDto, request);
         Assertions.assertThat(responseEntity.getBody()).isEqualTo("User registered successfully. Kindly check your mail inbox or junk folder to verify your account");
     }
@@ -90,10 +99,32 @@ class RegistrationServiceImplTest {
     @Test
     void testThatATokenPassedInWillBeConfirmedAndUserWillBeEnabled() {
         Mockito.when(userRepository.findByConfirmationToken(any())).thenReturn(Optional.of(user));
+        Mockito.when(jwtTokenProvider.validateToken(any())).thenReturn(true);
         ResponseEntity<String> responseEntity = registrationService.confirmRegistration("lGHjhgJHGjhgKui67857657igU67R76");
         Assertions.assertThat(user.getIsEnabled()).isEqualTo(true);
         Assertions.assertThat(responseEntity.getBody()).isEqualTo("Account verification successful");
         Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.ACCEPTED);
     }
 
+    @Test
+    void verifyRegistration() throws MalformedURLException {
+        Mockito.when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        Mockito.when(jwtTokenProvider.generateSignUpConfirmationToken(any())).thenReturn("khvvjbhilhliehwilhewlbjdhbiluhweiuh");
+        ResponseEntity<String> responseEntity = registrationService.verifyRegistration(1);
+        Assertions.assertThat(responseEntity.getBody()).isEqualTo("Kindly check your mail inbox or junk folder to verify your account");
+        Assertions.assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+
+    }
+    /*Optional<User> userCheck = userRepository.findById(id);
+        if (userCheck.isPresent()) {
+            User user = userCheck.get();
+            String token = jwtTokenProvider.generateSignUpConfirmationToken(user.getEmail());
+            user.setConfirmationToken(token);
+            userRepository.save(user);
+            emailSender.sendRegistrationEmail(user.getEmail(), token);
+        } else {
+            throw new RuntimeException("User with this email not found");
+        }
+            return new ResponseEntity<>("Kindly check your mail inbox or junk folder to verify your account", HttpStatus.OK );*/
 }

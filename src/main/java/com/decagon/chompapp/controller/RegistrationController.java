@@ -30,8 +30,9 @@ public class RegistrationController {
     }
 
     @PostMapping("/verifyEmail")
-    public ResponseEntity<String> verifyRegistration(@RequestParam(value = "email") String email, HttpServletRequest request) throws MalformedURLException {
-        return registrationService.verifyRegistration(email, request);
+    public ResponseEntity<String> verifyRegistration(@RequestParam(value = "id") long id) throws MalformedURLException {
+        return registrationService.verifyRegistration(id);
+
 
     }
 }
