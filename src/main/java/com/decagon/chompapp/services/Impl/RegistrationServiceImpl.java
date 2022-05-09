@@ -5,31 +5,32 @@ import com.decagon.chompapp.models.Role;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repository.RoleRepository;
 import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.EmailSenderService;
 import com.decagon.chompapp.services.RegistrationService;
-import com.decagon.chompapp.utils.Utility;
-import lombok.AllArgsConstructor;
-import net.bytebuddy.utility.RandomString;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private RoleRepository roleRepository;
-    private EmailSenderService emailSender;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final EmailSenderService emailSender;
+    private final JwtTokenProvider jwtTokenProvider;
 
 
     @Override
-    public ResponseEntity<String> registerUser(SignUpDto signUpDto, HttpServletRequest request) {
+    public ResponseEntity<String> registerUser(SignUpDto signUpDto, HttpServletRequest request) throws MalformedURLException {
         if(userRepository.existsByUsername(signUpDto.getUsername())){
             return new ResponseEntity<>("Username is already taken!", HttpStatus.BAD_REQUEST);
         }
@@ -47,32 +48,46 @@ public class RegistrationServiceImpl implements RegistrationService {
 
         Optional<Role> roles = roleRepository.findByName("ROLE_PREMIUM");
         user.setRoles(Collections.singleton(roles.get()));
-        String token = RandomString.make(30);
-        user.setConfirmationToken(token);
         user.setIsEnabled(false);
+
+
+        return verifyRegistration(user, request);
+    }
+
+    @Override
+    public ResponseEntity<String> verifyRegistration(User user, HttpServletRequest request) throws MalformedURLException {
+        String token = jwtTokenProvider.generateSignUpConfirmationToken(user.getEmail());
+        user.setConfirmationToken(token);
         userRepository.save(user);
-
-        String  confirmRegistrationLink = Utility.getSiteURL(request) + "/confirmRegistration?token=" + token;
-
-        String content = "<p>Hello,</p>"
-                + "<p>Congrats!!! Your registration was successful.</p>"
-                + "<p>Click the link below to verify your account:</p>"
-                + "<p><a href=\"" + confirmRegistrationLink + "\">Verify my account</a></p>"
-                + "<br>"
-                + "<p>Ignore this email if you did not register, "
-                + "or you have not made the request.</p>";
-        emailSender.send(signUpDto.getEmail(), content);
-
-
+        emailSender.sendRegistrationEmail(user.getEmail(), token);
         return new ResponseEntity<>("User registered successfully. Kindly check your mail inbox or junk folder to verify your account", HttpStatus.OK );
+    }
+    @Override
+    public ResponseEntity<String> verifyRegistration(String email, HttpServletRequest request) throws MalformedURLException {
+        var userCheck = userRepository.findByEmail(email);
+        if (userCheck.isPresent()) {
+            var user = userCheck.get();
+            String token = jwtTokenProvider.generateSignUpConfirmationToken(user.getEmail());
+            user.setConfirmationToken(token);
+            userRepository.save(user);
+            emailSender.sendRegistrationEmail(user.getEmail(), token);
+        }
+            return new ResponseEntity<>("Kindly check your mail inbox or junk folder to verify your account", HttpStatus.OK );
     }
 
     @Override
     public ResponseEntity<String> confirmRegistration(String token) {
-        Optional<User> existingUser = userRepository.findByConfirmationToken(token);
-        existingUser.orElseThrow().setConfirmationToken(null);
-        existingUser.orElseThrow().setIsEnabled(true);
-        userRepository.save(existingUser.orElseThrow());
-        return new ResponseEntity<>("Account verification successful", HttpStatus.ACCEPTED);
+        if (jwtTokenProvider.validateToken(token)){
+            Optional<User> existingUser = userRepository.findByConfirmationToken(token);
+            if (existingUser.isPresent()) {
+                existingUser.get().setConfirmationToken(null);
+                existingUser.get().setIsEnabled(true);
+                userRepository.save(existingUser.get());
+                return new ResponseEntity<>("Account verification successful", HttpStatus.ACCEPTED);
+            } else {
+                throw new RuntimeException("User not found!");
+            }
+        }
+        throw new RuntimeException("JWT token expired");
     }
 }

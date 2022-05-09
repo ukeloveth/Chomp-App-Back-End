@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -58,7 +59,7 @@ class RegistrationServiceImplTest {
     }
 
     @Test
-    void shouldReturnUserNameAlreadyTakenWhenUserTriesToSignUpWithAlreadyTakenUserName() {
+    void shouldReturnUserNameAlreadyTakenWhenUserTriesToSignUpWithAlreadyTakenUserName() throws MalformedURLException {
         Mockito.when(userRepository.existsByUsername(signUpDto.getUsername())).thenReturn(true);
         ResponseEntity<String> responseEntity = registrationService.registerUser(signUpDto, request);
         Assertions.assertThat(responseEntity.getBody()).isEqualTo("Username is already taken!");
@@ -66,14 +67,14 @@ class RegistrationServiceImplTest {
 
 
     @Test
-    void shouldReturnEmailAlreadyTakenWhenUserTriesToSignUpWithAlreadyTakenEmail() {
+    void shouldReturnEmailAlreadyTakenWhenUserTriesToSignUpWithAlreadyTakenEmail() throws MalformedURLException {
         Mockito.when(userRepository.existsByEmail(signUpDto.getEmail())).thenReturn(true);
         ResponseEntity<String> responseEntity = registrationService.registerUser(signUpDto, request);
         Assertions.assertThat(responseEntity.getBody()).isEqualTo("Email is already taken!");
     }
 
     @Test
-    void userGetsSaved() {
+    void userGetsSaved() throws MalformedURLException {
         Mockito.when(userRepository.existsByUsername(signUpDto.getUsername())).thenReturn(false);
         Mockito.when(userRepository.existsByEmail(signUpDto.getEmail())).thenReturn(false);
         Mockito.when(roleRepository.findByName("ROLE_PREMIUM")).thenReturn(Optional.of(role));

@@ -57,7 +57,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/orders").hasAuthority("ADMIN")
                 .antMatchers( "/checkout", "/users",
                         "/wallet", "/order-history",
-                        "/favorites")
+                        "/favorites", "/verifyEmail")
                 .hasAnyAuthority("ADMIN", "PREMIUM")
                 .anyRequest()
                 .authenticated()
