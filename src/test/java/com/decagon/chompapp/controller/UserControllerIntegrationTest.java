@@ -1,6 +1,7 @@
 package com.decagon.chompapp.controller;
 
 import com.decagon.chompapp.dto.EditUserDto;
+import com.decagon.chompapp.dto.PasswordDto;
 import com.decagon.chompapp.enums.Gender;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repository.UserRepository;
@@ -32,6 +33,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
@@ -107,4 +109,23 @@ class UserControllerIntegrationTest {
                 .perform(requestBuilder);
         actualPerformResult.andExpect(MockMvcResultMatchers.status().is(200));
     }
+
+    @Test
+    void testUpdatePassword() throws Exception {
+        when(this.userService.updatePassword((PasswordDto) any())).thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
+
+        PasswordDto passwordDto = new PasswordDto();
+        passwordDto.setConfirmPassword("1234");
+        passwordDto.setNewPassword("1234");
+        passwordDto.setOldPassword("lovey");
+        String content = (new ObjectMapper()).writeValueAsString(passwordDto);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/v1/auth/users/password-update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.userController)
+                .build()
+                .perform(requestBuilder);
+        actualPerformResult.andExpect(MockMvcResultMatchers.status().is(100));
+    }
+
 }
