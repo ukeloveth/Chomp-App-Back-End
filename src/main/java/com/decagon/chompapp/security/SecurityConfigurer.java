@@ -48,27 +48,28 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/admin").hasAuthority("ADMIN")
-                .antMatchers("/orders").hasAuthority("ADMIN")
-                .antMatchers( "/checkout", "/users",
-                        "/wallet", "/order-history",
-                        "/favorites")
-                .hasAnyAuthority("ADMIN", "PREMIUM")
-                .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "/swagger-ui/**",
+                .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
                         "swagger-resources/**", "/swagger-ui.html", "webjars/**")
                 .permitAll()
                 .antMatchers("/home", "/company", "/faq",
-
-                        "/contact", "/login", "/logout", "/forgot_password", "/h2-console")
+                        "/contact", "/signup", "/confirmRegistration",
+                        "/h2-console/**", "/login", "/logout", "/forgot_password",
+                        "/api/v1/auth/login", "/verifyEmail")
 
                 .permitAll()
+                .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/orders").hasAuthority("ROLE_ADMIN")
+                .antMatchers( "/checkout", "/users",
+                        "/wallet", "/order-history",
+                        "/favorites", "/verifyEmail")
+                .hasAnyAuthority("ROLE_ADMIN", "ROLE_PREMIUM")
                 .anyRequest()
                 .authenticated()
                 .and()
                 .httpBasic();
-
         http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         http.headers().frameOptions().disable();
+
     }
 
     @Override
