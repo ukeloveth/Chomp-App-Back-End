@@ -1,13 +1,15 @@
-package com.decagon.chompapp.controller;
+package com.decagon.chompapp.controllers;
 
-import com.decagon.chompapp.dto.EditUserDto;
+import com.decagon.chompapp.dtos.EditUserDto;
 import com.decagon.chompapp.enums.Gender;
+import com.decagon.chompapp.models.Product;
 import com.decagon.chompapp.models.User;
-import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.security.CustomUserDetailsService;
 import com.decagon.chompapp.security.JwtAuthenticationEntryPoint;
 import com.decagon.chompapp.security.JwtAuthenticationFilter;
 import com.decagon.chompapp.services.Impl.UserServiceImpl;
+import com.decagon.chompapp.services.ProductServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +38,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {UserController.class})
-class UserControllerIntegrationTest {
+class UserControllerIntegrationTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -46,6 +48,9 @@ class UserControllerIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    ProductServices productServices;
 
     @MockBean
     UserServiceImpl userService;

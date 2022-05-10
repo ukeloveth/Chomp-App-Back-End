@@ -1,9 +1,9 @@
-package com.decagon.chompapp.controller;
+package com.decagon.chompapp.controllers;
 
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.when;
-import com.decagon.chompapp.dto.LoginDto;
+import com.decagon.chompapp.dtos.LoginDto;
 import com.decagon.chompapp.services.LoginService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -24,7 +24,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ContextConfiguration(classes = {LoginController.class})
 @ExtendWith(SpringExtension.class)
-class LoginControllerTest {
+class LoginControllerUnitTests {
     @Autowired
     private LoginController loginController;
 

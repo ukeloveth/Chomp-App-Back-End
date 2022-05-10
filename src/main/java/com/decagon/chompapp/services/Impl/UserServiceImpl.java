@@ -1,8 +1,8 @@
 package com.decagon.chompapp.services.Impl;
 
-import com.decagon.chompapp.dto.EditUserDto;
+import com.decagon.chompapp.dtos.EditUserDto;
 import com.decagon.chompapp.models.User;
-import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

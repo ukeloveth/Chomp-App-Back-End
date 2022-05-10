@@ -1,7 +1,7 @@
 package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.models.BlackListedToken;
-import com.decagon.chompapp.repository.BlackListedTokenRepository;
+import com.decagon.chompapp.repositories.BlackListedTokenRepository;
 import com.decagon.chompapp.services.BlackListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

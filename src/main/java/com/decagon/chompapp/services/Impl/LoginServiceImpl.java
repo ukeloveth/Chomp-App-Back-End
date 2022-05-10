@@ -1,9 +1,9 @@
 package com.decagon.chompapp.services.Impl;
 
 
-import com.decagon.chompapp.dto.JwtAuthResponse;
-import com.decagon.chompapp.dto.LoginDto;
-import com.decagon.chompapp.repository.BlackListedTokenRepository;
+import com.decagon.chompapp.dtos.JwtAuthResponse;
+import com.decagon.chompapp.dtos.LoginDto;
+import com.decagon.chompapp.repositories.BlackListedTokenRepository;
 import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.BlackListService;
 import com.decagon.chompapp.services.LoginService;

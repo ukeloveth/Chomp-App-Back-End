@@ -1,10 +1,9 @@
 package com.decagon.chompapp.services.Impl;
 
-import com.decagon.chompapp.dto.EditUserDto;
+import com.decagon.chompapp.dtos.EditUserDto;
 import com.decagon.chompapp.enums.Gender;
 import com.decagon.chompapp.models.User;
-import com.decagon.chompapp.repository.UserRepository;
-import org.junit.jupiter.api.Assertions;
+import com.decagon.chompapp.repositories.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,9 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.web.client.ResponseActions;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

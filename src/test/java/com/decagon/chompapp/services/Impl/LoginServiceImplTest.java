@@ -8,27 +8,23 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.decagon.chompapp.dto.JwtAuthResponse;
-import com.decagon.chompapp.dto.LoginDto;
+import com.decagon.chompapp.dtos.JwtAuthResponse;
+import com.decagon.chompapp.dtos.LoginDto;
 import com.decagon.chompapp.models.BlackListedToken;
-import com.decagon.chompapp.repository.BlackListedTokenRepository;
+import com.decagon.chompapp.repositories.BlackListedTokenRepository;
 import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.BlackListService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.jupiter.api.Disabled;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.annotation.DirtiesContext;
