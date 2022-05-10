@@ -1,6 +1,8 @@
 package com.decagon.chompapp.controller;
 
 import com.decagon.chompapp.dto.EditUserDto;
+import com.decagon.chompapp.dto.EmailSenderDto;
+import com.decagon.chompapp.dto.ResetPasswordDto;
 import com.decagon.chompapp.services.ForgotPasswordService;
 import com.decagon.chompapp.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +21,6 @@ import static org.springframework.http.HttpStatus.OK;
 public class UserController {
 
     private final UserService userService;
-    private final ForgotPasswordService forgotPasswordService;
 
 
     @PutMapping("/edit")
@@ -28,12 +29,17 @@ public class UserController {
     }
 
     @PostMapping("/generate-token")
-    public ResponseEntity<String> generateToken(@RequestBody String email) throws MessagingException {
-        return new ResponseEntity<>(forgotPasswordService.generateResetToken(email), OK);
+    public ResponseEntity<String> generateToken(@RequestBody EmailSenderDto emailSenderDto) throws MessagingException {
+        return new ResponseEntity<>(userService.generateResetToken(emailSenderDto.getTo()), OK);
     }
 
-    @PostMapping("/reset-password/{token}")
-    public ResponseEntity<String> resetPassword(@RequestBody String newPassword, @PathVariable String token) {
-        return new ResponseEntity<>(forgotPasswordService.resetPassword(newPassword, token), OK);
+    @GetMapping("/enter-password")
+    public ResponseEntity<String> enterNewPassword(@RequestParam("token") String token) {
+        return new ResponseEntity<>("Please enter new password", OK);
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto, @RequestParam("token") String token) {
+        return new ResponseEntity<>(userService.resetPassword(resetPasswordDto, token), OK);
     }
 }

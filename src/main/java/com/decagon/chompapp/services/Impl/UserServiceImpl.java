@@ -2,6 +2,7 @@ package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dto.EditUserDto;
 import com.decagon.chompapp.dto.EmailSenderDto;
+import com.decagon.chompapp.dto.ResetPasswordDto;
 import com.decagon.chompapp.exception.UserNotFoundException;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repository.UserRepository;
@@ -60,26 +61,29 @@ public class UserServiceImpl implements UserService {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
-        String token = jwtTokenProvider.generateToken((Authentication) userDetails);
+        String token = jwtTokenProvider.generateSignUpConfirmationToken(email);
         EmailSenderDto emailDto = new EmailSenderDto();
         emailDto.setTo(email);
         emailDto.setSubject("Reset Your Password");
         emailDto.setContent( "Please Use This Link to Reset Your Password\n" +
-                "https://localhost:8081/reset-password/" + token);
+                "http://localhost:8081/api/v1/auth/users/enter-password?token=" + token);
         emailService.send(emailDto);
         return "Check Your Email to Reset Your Password";
     }
 
 
     @Override
-    public String resetPassword(String newPassword, String token) {
+    public String resetPassword(ResetPasswordDto resetPasswordDto, String token) {
+        if (resetPasswordDto.getNewPassword().equals(resetPasswordDto.getConfirmNewPassword())) {
         String email = jwtTokenProvider.getUsernameFromJwt(token);
 
         User user = userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("User does not exits in the database"));
 
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(passwordEncoder.encode(resetPasswordDto.getNewPassword()));
         userRepository.save(user);
         return "Password Reset Successfully";
+        }
+        throw new RuntimeException("Passwords don't match.");
     }
 }
