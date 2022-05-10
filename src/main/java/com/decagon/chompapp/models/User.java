@@ -78,4 +78,7 @@ public class User {
     @OneToOne(mappedBy = "user", orphanRemoval = true)
     private Cart cart;
 
+    public char[] getRole() {
+        return new char[0];
+    }
 }
