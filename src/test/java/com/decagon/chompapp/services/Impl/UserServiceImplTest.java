@@ -1,7 +1,9 @@
 package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dto.EditUserDto;
+import com.decagon.chompapp.dto.PasswordDto;
 import com.decagon.chompapp.enums.Gender;
+import com.decagon.chompapp.exception.PasswordConfirmationException;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -17,6 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.client.ResponseActions;
 
 import java.time.LocalDate;
@@ -24,13 +28,16 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceImplTest {
 
     @Mock
     UserRepository userRepository;
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     Authentication authentication = Mockito.mock(Authentication.class);
 
@@ -75,5 +82,26 @@ class UserServiceImplTest {
         assertEquals(response, userService.editUserDetails(userDto));
         assertEquals(userDto.getFirstName(), user.getFirstName());
 
+    }
+
+    @Test
+    void testUpdatePassword() {
+
+        PasswordDto passwordDto = mock(PasswordDto.class);
+        User user = User.builder()
+                .userId(1L)
+                .firstName("adekunle")
+                .lastName("adegoke")
+                .username("kay")
+                .email("adekunle@gmail.com")
+                .password(passwordEncoder.encode("12345"))
+                .build();
+
+        when(passwordDto.getConfirmPassword()).thenReturn("1234");
+        when(passwordDto.getNewPassword()).thenReturn("kay");
+        assertThrows(PasswordConfirmationException.class, () -> this.userService.updatePassword(passwordDto));
+        verify(passwordDto).getConfirmPassword();
+        verify(passwordDto).getNewPassword();
+        assertFalse(passwordDto.getConfirmPassword().equals(passwordDto.getNewPassword()));
     }
 }

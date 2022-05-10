@@ -1,6 +1,7 @@
 package com.decagon.chompapp.controller;
 
 import com.decagon.chompapp.dto.EditUserDto;
+import com.decagon.chompapp.dto.PasswordDto;
 import com.decagon.chompapp.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,5 +21,9 @@ public class UserController {
     @PutMapping("/edit")
     public ResponseEntity<String> editUserDetails(@Valid @RequestBody EditUserDto editUserDto) {
         return userService.editUserDetails(editUserDto);
+    }
+    @PutMapping("/password-update")
+    public ResponseEntity<String> login(@RequestBody PasswordDto passwordDto) {
+        return userService.updatePassword(passwordDto);
     }
 }
