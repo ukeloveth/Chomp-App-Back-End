@@ -1,4 +1,4 @@
-package com.decagon.chompapp.exception;
+package com.decagon.chompapp.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

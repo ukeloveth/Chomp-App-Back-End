@@ -1,6 +1,7 @@
 package com.decagon.chompapp.services;
 
-import com.decagon.chompapp.dto.SignUpDto;
+import com.decagon.chompapp.dtos.SignUpDto;
+import com.decagon.chompapp.dtos.SignUpDto;
 import com.decagon.chompapp.models.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;

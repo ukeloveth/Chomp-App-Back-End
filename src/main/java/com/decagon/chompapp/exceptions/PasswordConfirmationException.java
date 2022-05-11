@@ -1,4 +1,4 @@
-package com.decagon.chompapp.exception;
+package com.decagon.chompapp.exceptions;
 
 public class PasswordConfirmationException extends RuntimeException{
 

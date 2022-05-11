@@ -1,6 +1,7 @@
-package com.decagon.chompapp.controller;
+package com.decagon.chompapp.controllers;
 
-import com.decagon.chompapp.dto.SignUpDto;
+
+import com.decagon.chompapp.dtos.SignUpDto;
 import com.decagon.chompapp.services.RegistrationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

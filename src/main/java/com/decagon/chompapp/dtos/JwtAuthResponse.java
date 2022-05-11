@@ -1,4 +1,4 @@
-package com.decagon.chompapp.dto;
+package com.decagon.chompapp.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
