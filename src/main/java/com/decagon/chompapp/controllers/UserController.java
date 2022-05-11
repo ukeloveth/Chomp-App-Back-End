@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.decagon.chompapp.dtos.PasswordDto;
 
 import javax.servlet.ServletException;
 import javax.validation.Valid;
@@ -39,5 +40,9 @@ public class UserController {
             @RequestParam(value = "filterParam", defaultValue = AppConstants.DEFAULT_FILTER_PARAMETER, required = false) String filterParam)
             throws ServletException {
         return productServices.getAllProducts(pageNo, pageSize, sortBy, sortDir, filterBy, filterParam);
+    }
+    @PutMapping("/password-update")
+    public ResponseEntity<String> login(@RequestBody PasswordDto passwordDto) {
+        return userService.updatePassword(passwordDto);
     }
 }
