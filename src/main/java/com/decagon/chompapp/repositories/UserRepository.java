@@ -1,4 +1,4 @@
-package com.decagon.chompapp.repository;
+package com.decagon.chompapp.repositories;
 
 import com.decagon.chompapp.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;

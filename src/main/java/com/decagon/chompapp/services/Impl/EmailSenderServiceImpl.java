@@ -1,9 +1,9 @@
 package com.decagon.chompapp.services.Impl;
 
-import com.decagon.chompapp.controller.RegistrationController;
+import com.decagon.chompapp.controllers.RegistrationController;
 import com.decagon.chompapp.models.User;
-import com.decagon.chompapp.repository.UserRepository;
-import com.decagon.chompapp.dto.EmailSenderDto;
+import com.decagon.chompapp.repositories.UserRepository;
+import com.decagon.chompapp.dtos.EmailSenderDto;
 import com.decagon.chompapp.services.EmailSenderService;
 import com.decagon.chompapp.utils.Utility;
 import lombok.AllArgsConstructor;

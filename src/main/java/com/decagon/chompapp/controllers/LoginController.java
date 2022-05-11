@@ -1,14 +1,12 @@
-package com.decagon.chompapp.controller;
+package com.decagon.chompapp.controllers;
 
 
-import com.decagon.chompapp.dto.JwtAuthResponse;
-import com.decagon.chompapp.dto.LoginDto;
+import com.decagon.chompapp.dtos.JwtAuthResponse;
+import com.decagon.chompapp.dtos.LoginDto;
 import com.decagon.chompapp.services.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -16,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 public class LoginController {
 
     private final LoginService loginService;
-
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) throws Exception {

@@ -1,10 +1,11 @@
 package com.decagon.chompapp.services.Impl;
 
-import com.decagon.chompapp.dto.SignUpDto;
+
+import com.decagon.chompapp.dtos.SignUpDto;
 import com.decagon.chompapp.models.Role;
 import com.decagon.chompapp.models.User;
-import com.decagon.chompapp.repository.RoleRepository;
-import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.repositories.RoleRepository;
+import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.EmailSenderService;
 import com.decagon.chompapp.services.RegistrationService;

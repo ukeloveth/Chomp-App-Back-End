@@ -1,6 +1,6 @@
-package com.decagon.chompapp.exception;
+package com.decagon.chompapp.exceptions;
 
-import com.decagon.chompapp.dto.ErrorDetails;
+import com.decagon.chompapp.dtos.ErrorDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -11,7 +11,6 @@ import java.util.Date;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
 
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<ErrorDetails> handleProductNotFoundException(ProductNotFoundException exception,
@@ -34,4 +33,14 @@ public class GlobalExceptionHandler {
 
 
     }
+
+    @ExceptionHandler(PasswordConfirmationException.class)
+    public ResponseEntity<ErrorDetails> handlePasswordConfirmationException(PasswordConfirmationException exception,
+                                                                       WebRequest webRequest) {
+
+        ErrorDetails errorDetails = new ErrorDetails( new Date(), exception.getMessage(), webRequest.getDescription(false));
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
+    }
+
 }

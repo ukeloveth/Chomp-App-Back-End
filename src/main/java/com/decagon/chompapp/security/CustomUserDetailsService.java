@@ -1,7 +1,7 @@
 package com.decagon.chompapp.security;
 
 import com.decagon.chompapp.models.Role;
-import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.repositories.UserRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

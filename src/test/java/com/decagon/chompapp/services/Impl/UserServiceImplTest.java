@@ -1,10 +1,13 @@
 package com.decagon.chompapp.services.Impl;
 
-import com.decagon.chompapp.dto.EditUserDto;
-import com.decagon.chompapp.dto.ResetPasswordDto;
+import com.decagon.chompapp.dtos.EditUserDto;
+import com.decagon.chompapp.dtos.ResetPasswordDto;
+
+import com.decagon.chompapp.dtos.PasswordDto;
 import com.decagon.chompapp.enums.Gender;
+import com.decagon.chompapp.exceptions.PasswordConfirmationException;
 import com.decagon.chompapp.models.User;
-import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.security.CustomUserDetailsService;
 import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.EmailSenderService;
@@ -25,17 +28,22 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import javax.mail.MessagingException;
 import java.util.Collections;
+
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 class UserServiceImplTest {
 
     @Mock
     UserRepository userRepository;
+    @Mock
+    PasswordEncoder passwordEncoder;
 
     Authentication authentication = Mockito.mock(Authentication.class);
 
@@ -47,8 +55,6 @@ class UserServiceImplTest {
     private CustomUserDetailsService userDetailsService;
     @Mock
     private EmailSenderService emailService;
-    @Mock
-    private PasswordEncoder passwordEncoder;
 
 
     @InjectMocks
@@ -122,6 +128,27 @@ class UserServiceImplTest {
         assertEquals(response, userService.editUserDetails(userDto));
         assertEquals(userDto.getFirstName(), user.getFirstName());
 
+    }
+
+    @Test
+    void testUpdatePassword() {
+
+        PasswordDto passwordDto = mock(PasswordDto.class);
+        User user = User.builder()
+                .userId(1L)
+                .firstName("adekunle")
+                .lastName("adegoke")
+                .username("kay")
+                .email("adekunle@gmail.com")
+                .password(passwordEncoder.encode("12345"))
+                .build();
+
+        when(passwordDto.getConfirmPassword()).thenReturn("1234");
+        when(passwordDto.getNewPassword()).thenReturn("kay");
+        assertThrows(PasswordConfirmationException.class, () -> this.userService.updatePassword(passwordDto));
+        verify(passwordDto).getConfirmPassword();
+        verify(passwordDto).getNewPassword();
+        assertFalse(passwordDto.getConfirmPassword().equals(passwordDto.getNewPassword()));
     }
 
 

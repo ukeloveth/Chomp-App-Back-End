@@ -1,20 +1,19 @@
 package com.decagon.chompapp.services.Impl;
 
-import com.decagon.chompapp.dto.EmailSenderDto;
+import com.decagon.chompapp.dtos.EmailSenderDto;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import static org.mockito.ArgumentMatchers.any;
+
 
 import javax.mail.internet.MimeMessage;
-
-import static org.mockito.ArgumentMatchers.any;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

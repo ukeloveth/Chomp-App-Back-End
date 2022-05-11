@@ -1,13 +1,17 @@
-package com.decagon.chompapp.controller;
+package com.decagon.chompapp.controllers;
 
-import com.decagon.chompapp.dto.EditUserDto;
+
+import com.decagon.chompapp.dtos.PasswordDto;
+import com.decagon.chompapp.dtos.EditUserDto;
 import com.decagon.chompapp.enums.Gender;
+import com.decagon.chompapp.models.Product;
 import com.decagon.chompapp.models.User;
-import com.decagon.chompapp.repository.UserRepository;
+import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.security.CustomUserDetailsService;
 import com.decagon.chompapp.security.JwtAuthenticationEntryPoint;
 import com.decagon.chompapp.security.JwtAuthenticationFilter;
 import com.decagon.chompapp.services.Impl.UserServiceImpl;
+import com.decagon.chompapp.services.ProductServices;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,11 +36,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(controllers = {UserController.class})
-class UserControllerIntegrationTest {
+class UserControllerIntegrationTests {
 
     @Autowired
     MockMvc mockMvc;
@@ -46,6 +51,9 @@ class UserControllerIntegrationTest {
 
     @Autowired
     ObjectMapper objectMapper;
+
+    @MockBean
+    ProductServices productServices;
 
     @MockBean
     UserServiceImpl userService;
@@ -107,4 +115,23 @@ class UserControllerIntegrationTest {
                 .perform(requestBuilder);
         actualPerformResult.andExpect(MockMvcResultMatchers.status().is(200));
     }
+
+    @Test
+    void testUpdatePassword() throws Exception {
+        when(this.userService.updatePassword((PasswordDto) any())).thenReturn(new ResponseEntity<>(HttpStatus.CONTINUE));
+
+        PasswordDto passwordDto = new PasswordDto();
+        passwordDto.setConfirmPassword("1234");
+        passwordDto.setNewPassword("1234");
+        passwordDto.setOldPassword("lovey");
+        String content = (new ObjectMapper()).writeValueAsString(passwordDto);
+        MockHttpServletRequestBuilder requestBuilder = MockMvcRequestBuilders.put("/api/v1/auth/users/password-update")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(content);
+        ResultActions actualPerformResult = MockMvcBuilders.standaloneSetup(this.userController)
+                .build()
+                .perform(requestBuilder);
+        actualPerformResult.andExpect(MockMvcResultMatchers.status().is(100));
+    }
+
 }
