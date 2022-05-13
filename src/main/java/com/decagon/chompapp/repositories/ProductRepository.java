@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("SELECT p FROM Product p WHERE " + "LOWER(" + "CONCAT(p.productId, p.productName, p.quantity, p.productImage, p.productPrice,p.category.categoryName))" + "LIKE %?1%")
@@ -25,5 +27,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     @Query("SELECT p FROM Product p WHERE " + "LOWER(" + "p.category.categoryName)" + "=:categoryName")
     Page<Product> findAllByCategory_CategoryName(Pageable pageable, @Param("categoryName") String categoryName);
 
+    Optional<Product> findProductByProductId(Long productId);
 
 }

@@ -15,7 +15,7 @@ public class ProductDto {
 
     private String size;
 
-    private int quantity;
+    private Long quantity = 0L;
 
     private double productPrice;
 

@@ -28,7 +28,7 @@ public class Product {
     private @NotNull String size;
     private String productImage;
 
-    private int quantity;
+    private Long quantity;
 
     @Temporal(TemporalType.DATE)
     @CreationTimestamp

@@ -67,7 +67,7 @@ class ProductRepositoryIntegrationTests {
     @Test
     void whenProductIsSavedThenFindsAllByProductPriceBetweenRangeWillNotBeNull() {
         categoryRepository.save(Category.builder().categoryName("Burgers").build());
-        productRepository.save(Product.builder().productName("Mexican Avocado Burger").size("small").quantity(555).productPrice(491.00).category(categoryRepository.findByCategoryName("Burgers").orElseThrow()).build());
+        productRepository.save(Product.builder().productName("Mexican Avocado Burger").size("small").quantity(555L).productPrice(491.00).category(categoryRepository.findByCategoryName("Burgers").orElseThrow()).build());
         Pageable pageable = PageRequest.of(0, 2, Sort.by("productId"));
         Assertions.assertNotNull(productRepository.findAllByProductPriceBetween(pageable,491.00,490.00,492.00));
     }
@@ -75,7 +75,7 @@ class ProductRepositoryIntegrationTests {
     @Test
     void findAllByCategory_CategoryName() {
         categoryRepository.save(Category.builder().categoryName("Burgers").build());
-        productRepository.save(Product.builder().productName("Mexican Avocado Burger").size("small").quantity(555).productPrice(490.00).category(categoryRepository.findByCategoryName("Burgers").orElseThrow()).build());
+        productRepository.save(Product.builder().productName("Mexican Avocado Burger").size("small").quantity(555L).productPrice(490.00).category(categoryRepository.findByCategoryName("Burgers").orElseThrow()).build());
         Pageable pageable = PageRequest.of(0, 2, Sort.by("productId"));
         Assertions.assertNotNull(productRepository.findAllByCategory_CategoryName(pageable,"Burgers"));
     }

@@ -68,8 +68,8 @@ Swagger and PostMan
 
 Authors
 =======
-Lawal, Dennis, Wilfred, Kunle, Johny, Dennis, Peter, Wilfred, Isioma, Buezman, 
-Loveth, Stanley
+Lawal, Dennis, Wilfred, Kunle, Johnny, Peter, Isioma, Buezman, 
+Loveth, Stanley.
 See also the list of contributors who participated in this project.
 
 License
