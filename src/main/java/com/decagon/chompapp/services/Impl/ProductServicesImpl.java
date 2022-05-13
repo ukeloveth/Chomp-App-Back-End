@@ -26,33 +26,34 @@ public class ProductServicesImpl implements ProductServices {
     private final ProductRepository productRepository;
 
     @Override
-    public ResponseEntity<ProductResponse> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir, String filterBy, String filterParam) {
+    public ResponseEntity<ProductResponse> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir, String filterBy, String filterParam, String startRange, String endRange) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())  ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        switch (filterBy) {
-            case "productName": {
-                Page<Product> products = productRepository.findAllByProductNameContains(pageable, filterParam);
-                return getProductResponseEntity(products);
+        if ("".equals(filterBy) && !"".equals(filterParam)) {
+            Page<Product> products = productRepository.findAllByFilterParam(pageable,filterParam.toLowerCase());
+            return getProductResponseEntity(products);
+        } else {
+            switch (filterBy) {
+                case "productName": {
+                    Page<Product> products = productRepository.findAllByProductNameContains(pageable, filterParam.toLowerCase());
+                    return getProductResponseEntity(products);
+                }
+                case "size": {
+                    Page<Product> products = productRepository.findAllBySizeContains(pageable, filterParam.toLowerCase());
+                    return getProductResponseEntity(products);
+                }
+                case "productPrice": {
+                    Page<Product> products = productRepository.findAllByProductPriceBetween(pageable, Double.parseDouble(filterParam), Double.parseDouble(startRange), Double.parseDouble(endRange));
+                    return getProductResponseEntity(products);
+                }
+                case "categoryName": {
+                    Page<Product> products = productRepository.findAllByCategory_CategoryName(pageable, filterParam.toLowerCase());
+                    return getProductResponseEntity(products);
+                }
+                default:
+                    Page<Product> products = productRepository.findAll(pageable);
+                    return getProductResponseEntity(products);
             }
-            case "size": {
-                Page<Product> products = productRepository.findAllBySizeContains(pageable, filterParam);
-                return getProductResponseEntity(products);
-            }
-            case "quantity": {
-                Page<Product> products = productRepository.findAllByQuantityContains(pageable, filterParam);
-                return getProductResponseEntity(products);
-            }
-            case "productPrice": {
-                Page<Product> products = productRepository.findAllByProductPriceContains(pageable, filterParam);
-                return getProductResponseEntity(products);
-            }
-            case "categoryName": {
-                Page<Product> products = productRepository.findAllByCategory_CategoryName(pageable, filterParam);
-                return getProductResponseEntity(products);
-            }
-            default:
-                Page<Product> products = productRepository.findAll(pageable);
-                return getProductResponseEntity(products);
         }
     }
 

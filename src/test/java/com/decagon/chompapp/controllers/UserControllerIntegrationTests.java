@@ -1,8 +1,7 @@
 package com.decagon.chompapp.controllers;
 
-
-import com.decagon.chompapp.dtos.PasswordDto;
 import com.decagon.chompapp.dtos.EditUserDto;
+import com.decagon.chompapp.dtos.PasswordDto;
 import com.decagon.chompapp.enums.Gender;
 import com.decagon.chompapp.models.Product;
 import com.decagon.chompapp.models.User;
@@ -133,5 +132,4 @@ class UserControllerIntegrationTests {
                 .perform(requestBuilder);
         actualPerformResult.andExpect(MockMvcResultMatchers.status().is(100));
     }
-
 }

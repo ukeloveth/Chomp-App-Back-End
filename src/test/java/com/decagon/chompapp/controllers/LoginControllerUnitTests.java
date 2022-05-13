@@ -52,7 +52,7 @@ class LoginControllerUnitTests {
     public void testLogout() throws Exception {
         when(loginService.logout(any())).thenReturn(null);
 
-        ResponseEntity<?> result = loginController.logout(null);
+        ResponseEntity<?> result = loginService.logout(null);
         Assertions.assertNull(result);
     }
 

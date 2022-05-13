@@ -81,7 +81,7 @@ public class UserControllerUnitTests {
         final HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
         responseEntity = new ResponseEntity<>(productResponse, httpHeaders, HttpStatus.OK);
-        Mockito.when(productServices.getAllProducts(anyInt(),anyInt(),anyString(),anyString(),anyString(),anyString())).thenReturn(responseEntity);
+        Mockito.when(productServices.getAllProducts(anyInt(),anyInt(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(responseEntity);
     }
 
     @Test
@@ -99,7 +99,7 @@ public class UserControllerUnitTests {
         mockMvc.perform((MockMvcRequestBuilders.get("/api/v1/auth/users/getAllProducts").param("pageNo", AppConstants.DEFAULT_PAGE_NUMBER).param("pageSize", AppConstants.DEFAULT_PAGE_SIZE).param("sortBy", AppConstants.DEFAULT_SORT_BY)).accept(MediaType.APPLICATION_JSON)).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
         ArgumentCaptor<String> stringArgumentCaptor = ArgumentCaptor.forClass(String.class);
         ArgumentCaptor<Integer> integerArgumentCaptor = ArgumentCaptor.forClass(Integer.class);
-        verify(productServices, times(1)).getAllProducts(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture());
+        verify(productServices, times(1)).getAllProducts(integerArgumentCaptor.capture(), integerArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture(), stringArgumentCaptor.capture(),stringArgumentCaptor.capture(),stringArgumentCaptor.capture());
         Assertions.assertEquals(integerArgumentCaptor.getValue(),10);
     }
 

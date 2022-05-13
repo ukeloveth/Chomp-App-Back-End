@@ -41,7 +41,9 @@ class ProductServicesImplTests {
         String sortDir = "asc";
         String filterBy = "";
         String filterParam = "";
-        productServicesImpl.getAllProducts(0, 2, sortBy, sortDir, filterBy, filterParam);
+        String productPriceStartRange= "";
+        String productPriceEndRange= "";
+        productServicesImpl.getAllProducts(0, 2, sortBy, sortDir, filterBy, filterParam,productPriceStartRange,productPriceEndRange);
         verify(productRepository).findAll(pageable);
     }
 }
