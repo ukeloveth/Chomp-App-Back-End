@@ -5,34 +5,28 @@ package com.decagon.chompapp.services.Impl;
 import com.decagon.chompapp.dtos.PasswordDto;
 import com.decagon.chompapp.exceptions.PasswordConfirmationException;
 import com.decagon.chompapp.dtos.EditUserDto;
-import com.decagon.chompapp.dtos.EditUserDto;
 import com.decagon.chompapp.dtos.EmailSenderDto;
 import com.decagon.chompapp.dtos.ResetPasswordDto;
 import com.decagon.chompapp.exceptions.UserNotFoundException;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repositories.UserRepository;
-import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.security.CustomUserDetailsService;
 import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.EmailSenderService;
 import com.decagon.chompapp.services.UserService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
 
 
 @Service
-//@AllArgsConstructor
 @RequiredArgsConstructor
 
 public class UserServiceImpl implements UserService {
@@ -88,8 +82,6 @@ public class UserServiceImpl implements UserService {
         userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException("User does not exits in the database"));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
         String token = jwtTokenProvider.generateSignUpConfirmationToken(email);
         EmailSenderDto emailDto = new EmailSenderDto();
         emailDto.setTo(email);
@@ -98,6 +90,11 @@ public class UserServiceImpl implements UserService {
                 "http://localhost:8081/api/v1/auth/users/enter-password?token=" + token);
         emailService.send(emailDto);
         return "Check Your Email to Reset Your Password";
+    }
+    @Override
+    public ResponseEntity<String> enterResetPassword(String token, HttpServletResponse response){
+        response.setHeader("reset-password", token);
+        return ResponseEntity.ok("Please enter new password.");
     }
 
 

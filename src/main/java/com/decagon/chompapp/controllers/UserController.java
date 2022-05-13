@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import static org.springframework.http.HttpStatus.OK;
@@ -46,18 +48,18 @@ public class UserController {
         return userService.updatePassword(passwordDto);
     }
 
-    @PostMapping("/generate-token")
-    public ResponseEntity<String> generateToken(@RequestBody EmailSenderDto emailSenderDto) throws MessagingException {
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody EmailSenderDto emailSenderDto) throws MessagingException {
         return new ResponseEntity<>(userService.generateResetToken(emailSenderDto.getTo()), OK);
     }
 
     @GetMapping("/enter-password")
-    public ResponseEntity<String> enterNewPassword(@RequestParam("token") String token) {
-        return new ResponseEntity<>("Please enter new password", OK);
+    public ResponseEntity<String> enterNewPassword(@RequestParam("token") String token, HttpServletResponse response) {
+        return userService.enterResetPassword(token, response);
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto, @RequestParam("token") String token) {
-        return new ResponseEntity<>(userService.resetPassword(resetPasswordDto, token), OK);
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto, HttpServletRequest request) {
+        return new ResponseEntity<>(userService.resetPassword(resetPasswordDto, request.getHeader("reset-password")), OK);
     }
 }
