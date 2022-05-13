@@ -1,38 +1,43 @@
 package com.decagon.chompapp.services.Impl;
 
+import com.decagon.chompapp.dtos.EditUserDto;
+import com.decagon.chompapp.dtos.ResetPasswordDto;
 
 import com.decagon.chompapp.dtos.PasswordDto;
-import com.decagon.chompapp.dtos.EditUserDto;
 import com.decagon.chompapp.enums.Gender;
 import com.decagon.chompapp.exceptions.PasswordConfirmationException;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repositories.UserRepository;
+import com.decagon.chompapp.security.CustomUserDetailsService;
+import com.decagon.chompapp.security.JwtTokenProvider;
+import com.decagon.chompapp.services.EmailSenderService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.web.client.ResponseActions;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.mail.MessagingException;
+import java.util.Collections;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith(SpringExtension.class)
 class UserServiceImplTest {
 
     @Mock
@@ -44,11 +49,51 @@ class UserServiceImplTest {
 
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
 
+    @Mock
+    private JwtTokenProvider jwtTokenProvider;
+    @Mock
+    private CustomUserDetailsService userDetailsService;
+    @Mock
+    private EmailSenderService emailService;
+
+
     @InjectMocks
     UserServiceImpl userService;
 
+    private User user;
+
     @BeforeEach
     void setUp() {
+        user = new User();
+        user.setEmail("ukeloveth247@gmail.com");
+        user.setPassword("great");
+
+    }
+
+    @Test
+    void generateToken() throws MessagingException {
+        Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        Mockito.when(userDetailsService.loadUserByUsername(any())).thenReturn(new org.springframework.security.core.userdetails.User(
+                user.getEmail(), user.getPassword(), Collections.singleton(new SimpleGrantedAuthority("ROLE_PREMIUM"))));
+        String token = "iuhiuhdhsjhkhaieooijowjeosdjkjskj";
+        Mockito.when(jwtTokenProvider.generateToken(any())).thenReturn(token);
+        Mockito.when(emailService.send(any())).thenReturn(ResponseEntity.ok("Message sent successfully"));
+        String result = userService.generateResetToken(user.getEmail());
+        org.assertj.core.api.Assertions.assertThat(result).isEqualTo("Check Your Email to Reset Your Password");
+
+
+    }
+
+    @Test
+    void resetPassword(){
+        ResetPasswordDto resetPasswordDto = new ResetPasswordDto("12345", "12345");
+        Mockito.when(jwtTokenProvider.getUsernameFromJwt(any())).thenReturn(user.getEmail());
+        Mockito.when(userRepository.findByEmail(any())).thenReturn(Optional.of(user));
+        String newPassword = "iou23iu23ioy3o73873ii";
+        Mockito.when(passwordEncoder.encode(any())).thenReturn(newPassword);
+        Mockito.when(userRepository.save(any())).thenReturn(user);
+        String resetPassword = userService.resetPassword(resetPasswordDto, "hsdjksuiwue");
+        org.assertj.core.api.Assertions.assertThat(resetPassword).isEqualTo("Password Reset Successfully");
     }
 
     @Test
@@ -105,4 +150,8 @@ class UserServiceImplTest {
         verify(passwordDto).getNewPassword();
         assertFalse(passwordDto.getConfirmPassword().equals(passwordDto.getNewPassword()));
     }
+
+
+
+
 }

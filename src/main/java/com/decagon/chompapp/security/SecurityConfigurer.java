@@ -55,7 +55,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/home", "/company", "/faq",
                         "/contact", "/signup", "/confirmRegistration",
                         "/h2-console/**", "/login", "/logout", "/forgot_password",
-                        "/api/v1/auth/login", "/verifyEmail")
+                        "/api/v1/auth/login", "/verifyEmail", "/api/v1/auth/users/forgot-password",
+                        "/api/v1/auth/users/enter-password", "/api/v1/auth/users/reset-password")
 
                 .permitAll()
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
