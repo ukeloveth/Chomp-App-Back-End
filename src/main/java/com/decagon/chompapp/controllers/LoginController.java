@@ -3,6 +3,7 @@ package com.decagon.chompapp.controllers;
 
 import com.decagon.chompapp.dtos.JwtAuthResponse;
 import com.decagon.chompapp.dtos.LoginDto;
+import com.decagon.chompapp.dtos.PasswordDto;
 import com.decagon.chompapp.services.LoginService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
