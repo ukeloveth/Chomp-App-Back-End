@@ -38,6 +38,8 @@ class AdminServiceImplTest {
 
 
 
+
+
     @InjectMocks
     private AdminServiceImpl adminService;
 
@@ -58,6 +60,10 @@ class AdminServiceImplTest {
                 .size("Big")
                 .build();
 
+        category = Category.builder()
+                .categoryName("sides")
+                .build();
+
         product = Product.builder()
                 .productId(productDto.getProductId())
                 .productName(productDto.getProductName())
@@ -65,10 +71,6 @@ class AdminServiceImplTest {
                 .size(productDto.getSize())
                 .productPrice(productDto.getProductPrice())
                 .category(category)
-                .build();
-
-        category = Category.builder()
-                .categoryName("sides")
                 .build();
 
         productImage = ProductImage.builder()
@@ -107,5 +109,27 @@ class AdminServiceImplTest {
         verify(productRepository, atLeastOnce()).findProductByProductId(any());
         verify(productImageRepository, atLeastOnce()).save(any());
 
+    }
+
+    @Test
+    void updateProduct(){
+        when(productRepository.findProductByProductId(any())).thenReturn(Optional.of(product));
+        when(productRepository.save(any())).thenReturn(product);
+        ResponseEntity<String> result = adminService.updateProduct(productDto,product.getProductId());
+
+        Assertions.assertEquals(result.getBody(),"Product updated successfully with product id " + product.getProductId() );
+        verify(productRepository).findProductByProductId(any());
+    }
+
+    @Test
+    void updateProductImage(){
+        when(productImageRepository.findById(any())).thenReturn(Optional.of(productImage));
+        when(productRepository.findProductByProductId(any())).thenReturn(Optional.of(product));
+        when(productRepository.save(any())).thenReturn(product);
+        when(productImageRepository.save(any())).thenReturn(productImage);
+        ResponseEntity<ProductImage> result = adminService.updateProductImage(product.getProductImage(), product.getProductId());
+        Assertions.assertEquals(result.getBody(),productImage);
+        verify(productImageRepository).save(any());
+        verify(productRepository).save(any());
     }
 }

@@ -34,4 +34,14 @@ public class AdminServiceController {
     public ResponseEntity<ProductImage> uploadImage(@RequestPart MultipartFile image, @RequestParam("id") Product product){
         return adminService.saveProductImage(cloudinaryService.uploadFile(image), product.getProductId());
     }
+
+    @PutMapping("update-product/{id}")
+    public ResponseEntity<String> updateProduct(@RequestBody ProductDto productDto, @PathVariable long id){
+        return adminService.updateProduct(productDto, id);
+    }
+
+    @PutMapping("update-product-image/{id}")
+    public ResponseEntity<ProductImage> updateProductImage(@RequestPart MultipartFile image,@PathVariable long id){
+        return adminService.updateProductImage(cloudinaryService.uploadFile(image), id);
+    }
 }

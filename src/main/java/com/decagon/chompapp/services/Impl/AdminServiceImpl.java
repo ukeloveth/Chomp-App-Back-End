@@ -60,19 +60,48 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
+
     @Override
     public ResponseEntity<ProductImage> saveProductImage(String productImageURL, Long productId) {
         ProductImage productImage = new ProductImage();
         productImage.setImageURL(productImageURL);
         Optional<Product> createdProduct = productRepository.findProductByProductId(productId);
-        if (createdProduct.isPresent()) {
-            productImage.setProduct(createdProduct.get());
+        return getProductImageResponseEntity(productId, productImage, createdProduct);
+    }
+
+
+    @Override
+    public ResponseEntity<String> updateProduct(ProductDto productDto, Long productId) {
+        Product product = productRepository.findProductByProductId(productId).orElseThrow(() -> new ProductNotFoundException("Product","id", productId));
+        product.setProductPrice(productDto.getProductPrice());
+        product.setProductName(productDto.getProductName());
+        product.setSize(productDto.getSize());
+        product.setQuantity(productDto.getQuantity());
+
+        Product updatedProduct = productRepository.save(product);
+
+        return ResponseEntity.ok("Product updated successfully with product id " + updatedProduct.getProductId()) ;
+    }
+
+    @Override
+    public ResponseEntity<ProductImage> updateProductImage(String productImageURL, Long productId) {
+        Optional<ProductImage> productImage1 = productImageRepository.findById(productId);
+        Optional<Product> productToBeUpdated = productRepository.findProductByProductId(productId);
+        productImage1.get().setImageURL(productImageURL);
+        return getProductImageResponseEntity(productId, productImage1.get(), productToBeUpdated);
+    }
+
+    private ResponseEntity<ProductImage> getProductImageResponseEntity(Long productId, ProductImage productImage, Optional<Product> productToBeUpdated) {
+        if (productToBeUpdated.isPresent()) {
+            productImage.setProduct(productToBeUpdated.get());
             product.setProductImage(productImage.getImageURL());
         } else {
             throw new ProductNotFoundException("productName", "productId", productId);
         }
-        createdProduct.get().setProductImage(productImage.getImageURL());
-        productRepository.save(createdProduct.get());
+        productToBeUpdated.get().setProductImage(productImage.getImageURL());
+        productRepository.save(productToBeUpdated.get());
         return ResponseEntity.ok(productImageRepository.save(productImage));
     }
+
+
 }
