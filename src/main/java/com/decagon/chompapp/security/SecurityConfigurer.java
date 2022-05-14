@@ -56,11 +56,13 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/contact", "/signup", "/confirmRegistration",
                         "/h2-console/**", "/login", "/logout", "/forgot_password",
                         "/api/v1/auth/login", "/verifyEmail", "/api/v1/auth/users/forgot-password",
-                        "/api/v1/auth/users/enter-password", "/api/v1/auth/users/reset-password")
+                        "/api/v1/auth/users/enter-password", "/api/v1/auth/users/reset-password",
+                        "/api/v1/auth/logout")
 
                 .permitAll()
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/orders").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/admin/delete-product/{productId}").hasAuthority("ROLE_ADMIN")
                 .antMatchers( "/checkout", "/users",
                         "/wallet", "/order-history",
                         "/favorites", "/verifyEmail")

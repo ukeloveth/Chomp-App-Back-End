@@ -43,5 +43,11 @@ public class AdminServiceController {
     @PutMapping("update-product-image/{id}")
     public ResponseEntity<ProductImage> updateProductImage(@RequestPart MultipartFile image,@PathVariable long id){
         return adminService.updateProductImage(cloudinaryService.uploadFile(image), id);
+
+    }
+
+    @DeleteMapping("delete-product/{productId}")
+    public ResponseEntity<String> deleteProduct(@PathVariable(value = "productId") Long productId) {
+        return adminService.deleteProduct(productId);
     }
 }

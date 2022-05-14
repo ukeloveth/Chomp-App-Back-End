@@ -1,6 +1,7 @@
 package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dtos.ProductDto;
+import com.decagon.chompapp.exceptions.ProductNotFoundException;
 import com.decagon.chompapp.models.Category;
 import com.decagon.chompapp.models.Product;
 import com.decagon.chompapp.models.ProductImage;
@@ -131,5 +132,15 @@ class AdminServiceImplTest {
         Assertions.assertEquals(result.getBody(),productImage);
         verify(productImageRepository).save(any());
         verify(productRepository).save(any());
+    }
+    @Test
+    void testForAdminToDeleteProduct() {
+        doThrow(new ProductNotFoundException("Product is not found!")).when(this.productRepository).deleteById((Long) any());
+        when(this.productRepository.findProductByProductId((Long) any())).thenReturn(Optional.of(product));
+        assertThrows(ProductNotFoundException.class, () -> this.adminService.deleteProduct(123L));
+        verify(this.productRepository).findProductByProductId((Long) any());
+        verify(this.productRepository).deleteById((Long) any());
+        when(this.productRepository.findProductByProductId((Long) any())).thenReturn(Optional.empty());
+        assertThrows(ProductNotFoundException.class, () -> this.adminService.deleteProduct(123L));
     }
 }

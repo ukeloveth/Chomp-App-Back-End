@@ -103,5 +103,15 @@ public class AdminServiceImpl implements AdminService {
         return ResponseEntity.ok(productImageRepository.save(productImage));
     }
 
+    @Override
+    public ResponseEntity<String> deleteProduct(Long productId) {
+
+        Optional<Product> product = productRepository.findProductByProductId(productId);
+        if (!product.isPresent()) {
+            throw new ProductNotFoundException("Product not found!");
+        }
+        productRepository.deleteById(productId);
+        return ResponseEntity.status(HttpStatus.OK).body("Product deleted successfully");
+    }
 
 }
