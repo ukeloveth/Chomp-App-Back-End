@@ -3,6 +3,7 @@ package com.decagon.chompapp.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(1)
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -49,8 +51,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
+                .antMatchers("/favorite/**").permitAll()
                 .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
-                        "swagger-resources/**", "/swagger-ui.html", "webjars/**")
+                        "swagger-resources/**", "/swagger-ui.html", "webjars/**", "/swagger-ui/#/**")
                 .permitAll()
                 .antMatchers("/home", "/company", "/faq",
                         "/contact", "/signup", "/confirmRegistration",

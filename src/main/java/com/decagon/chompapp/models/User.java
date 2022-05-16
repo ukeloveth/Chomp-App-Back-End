@@ -51,6 +51,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Gender gender;
 
+
+
 //    @Enumerated(EnumType.STRING)
 //    private Role role;
 
@@ -83,5 +85,7 @@ public class User {
     private String confirmationToken;
 
     private Boolean isEnabled;
+
+    private Boolean isActive;
 
 }
