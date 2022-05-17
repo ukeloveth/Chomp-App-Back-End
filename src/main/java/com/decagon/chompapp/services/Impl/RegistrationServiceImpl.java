@@ -1,26 +1,28 @@
 package com.decagon.chompapp.services.Impl;
 
-
 import com.decagon.chompapp.dtos.SignUpDto;
+import com.decagon.chompapp.models.Cart;
 import com.decagon.chompapp.models.Role;
 import com.decagon.chompapp.models.User;
+import com.decagon.chompapp.repositories.CartRepository;
 import com.decagon.chompapp.repositories.RoleRepository;
 import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.security.JwtTokenProvider;
 import com.decagon.chompapp.services.EmailSenderService;
 import com.decagon.chompapp.services.RegistrationService;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Optional;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
+//@RequiredArgsConstructor
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
     private final UserRepository userRepository;
@@ -28,6 +30,7 @@ public class RegistrationServiceImpl implements RegistrationService {
     private final RoleRepository roleRepository;
     private final EmailSenderService emailSender;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CartRepository cartRepository;
 
 
     @Override
@@ -59,7 +62,10 @@ public class RegistrationServiceImpl implements RegistrationService {
     public ResponseEntity<String> verifyRegistration(User user, HttpServletRequest request) throws MalformedURLException {
         String token = jwtTokenProvider.generateSignUpConfirmationToken(user.getEmail());
         user.setConfirmationToken(token);
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        Cart cart = new Cart(savedUser);
+        cartRepository.save(cart);
+
         emailSender.sendRegistrationEmail(user.getEmail(), token);
         return new ResponseEntity<>("User registered successfully. Kindly check your mail inbox or junk folder to verify your account", HttpStatus.OK );
     }

@@ -1,18 +1,19 @@
 package com.decagon.chompapp.models;
-
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.List;
-
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cartId;
-//    @Column(name = "created_date")
-//    private Date createdDate;
     private int quantity;
 
     private double cartTotal;
@@ -25,8 +26,7 @@ public class Cart {
     @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
-
-
-
-
+    public Cart(User user) {
+        this.user = user;
+    }
 }

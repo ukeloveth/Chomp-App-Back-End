@@ -50,17 +50,17 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
+                .antMatchers("/api/v1/auth/users/getAllProducts").permitAll()
                 .antMatchers("/favorite/**").permitAll()
                 .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
-                        "swagger-resources/**", "/swagger-ui.html", "webjars/**", "/swagger-ui/#/**")
+                        "swagger-resources/**", "/swagger-ui.html", "webjars/**", "swagger-ui/#/**")
                 .permitAll()
                 .antMatchers("/home", "/company", "/faq",
                         "/contact", "/signup", "/confirmRegistration",
                         "/h2-console/**", "/login", "/logout", "/forgot_password",
                         "/api/v1/auth/login", "/verifyEmail", "/api/v1/auth/users/forgot-password",
                         "/api/v1/auth/users/enter-password", "/api/v1/auth/users/reset-password",
-                        "/api/v1/auth/logout")
+                        "/api/v1/auth/logout", "/cart/**")
 
                 .permitAll()
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")

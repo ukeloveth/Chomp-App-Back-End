@@ -2,7 +2,6 @@ package com.decagon.chompapp.services;
 
 import com.decagon.chompapp.dtos.PasswordDto;
 import com.decagon.chompapp.dtos.EditUserDto;
-import com.decagon.chompapp.dtos.EditUserDto;
 import com.decagon.chompapp.dtos.ResetPasswordDto;
 import org.springframework.http.ResponseEntity;
 

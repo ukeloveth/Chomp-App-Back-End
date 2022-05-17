@@ -1,17 +1,20 @@
 package com.decagon.chompapp.models;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 
+@Getter
+@Setter
+@RequiredArgsConstructor
+@AllArgsConstructor
 @Entity
+@Builder
 public class CartItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long itemId;
+    private Long cartItemId;
 
     @OneToOne
     private Product product;

@@ -6,14 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-@Repository
-public interface ProductRepository extends JpaRepository<Product,Long> {
+public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE " + "LOWER(" + "CONCAT(p.productId, p.productName, p.quantity, p.productImage, p.productPrice,p.category.categoryName))" + "LIKE %?1%")
-    Page<Product> findAllByFilterParam (Pageable pageable,String filterParam);
+    Page<Product> findAllByFilterParam (Pageable pageable, String filterParam);
 
     @Query("SELECT p FROM Product p WHERE " + "LOWER(" + "p.productName)" + "LIKE %?1%")
     Page<Product> findAllByProductNameContains (Pageable pageable, String productName);
@@ -28,5 +26,4 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     Page<Product> findAllByCategory_CategoryName(Pageable pageable, @Param("categoryName") String categoryName);
 
     Optional<Product> findProductByProductId(Long productId);
-
 }

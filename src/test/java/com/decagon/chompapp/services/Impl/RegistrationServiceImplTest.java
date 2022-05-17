@@ -1,8 +1,10 @@
 package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dtos.SignUpDto;
+import com.decagon.chompapp.models.Cart;
 import com.decagon.chompapp.models.Role;
 import com.decagon.chompapp.models.User;
+import com.decagon.chompapp.repositories.CartRepository;
 import com.decagon.chompapp.repositories.RoleRepository;
 import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.security.JwtTokenProvider;
@@ -20,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.servlet.http.HttpServletRequest;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 
@@ -33,6 +36,8 @@ class RegistrationServiceImplTest {
     @Mock
     private PasswordEncoder passwordEncoder;
     @Mock
+    private CartRepository cartRepository;
+    @Mock
     private RoleRepository roleRepository;
     @Mock
     private EmailSenderService emailSender;
@@ -45,6 +50,7 @@ class RegistrationServiceImplTest {
     private SignUpDto signUpDto;
     private Role role;
     private User user;
+    private Cart userCart;
 
 
     @BeforeEach
@@ -56,6 +62,8 @@ class RegistrationServiceImplTest {
         role = Role.builder().name("ROLE_PREMIUM").build();
         user = User.builder().firstName("Stanley").lastName("Nkannebe").username("funkystan")
                 .email("funkystan@gmail.com").password("12345").build();
+        userCart = Cart.builder().cartId(1L).cartTotal(0).user(user).quantity(0).cartItemList(new ArrayList<>()).build();
+
 
     }
 
@@ -81,6 +89,7 @@ class RegistrationServiceImplTest {
         Mockito.when(roleRepository.findByName("ROLE_PREMIUM")).thenReturn(Optional.of(role));
         Mockito.when(jwtTokenProvider.generateSignUpConfirmationToken(any())).thenReturn("khvvjbhilhliehwilhewlbjdhbiluhweiuh");
         Mockito.when(userRepository.save(any())).thenReturn(user);
+        Mockito.when(cartRepository.save(any())).thenReturn(userCart);
         ResponseEntity<String> responseEntity = registrationService.registerUser(signUpDto, request);
         Assertions.assertThat(responseEntity.getBody()).isEqualTo("User registered successfully. Kindly check your mail inbox or junk folder to verify your account");
     }
