@@ -1,8 +1,15 @@
 package com.decagon.chompapp.models;
 
 
+import lombok.*;
+
 import javax.persistence.*;
 
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class Wallet {
 
@@ -13,5 +20,7 @@ public class Wallet {
 
     @OneToOne
     private User user;
+
+    private double walletBalance ;
 
 }

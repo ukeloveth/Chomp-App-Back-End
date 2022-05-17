@@ -43,6 +43,17 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
 
+
+    @ExceptionHandler(WalletCannotBeAccessedException.class)
+    public ResponseEntity<ErrorDetails> handleWalletCannotBeAccessedException(WalletCannotBeAccessedException exception,
+                                                                              WebRequest webRequest) {
+
+        ErrorDetails errorDetails = new ErrorDetails( new Date(), exception.getMessage(), webRequest.getDescription(false));
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorDetails);
+    }
+
+
     @ExceptionHandler(NoFavoriteException.class)
     public ResponseEntity<ErrorDetails> handleNoProductInFavoriteException(NoFavoriteException exception,
                                                                            WebRequest webRequest) {
@@ -60,5 +71,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorDetails);
     }
+
 
 }

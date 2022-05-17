@@ -64,6 +64,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
                 .permitAll()
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
+                .antMatchers("api/v1/auth/wallet/fund-wallet").hasAuthority("ROLE_PREMIUM")
                 .antMatchers("/orders").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/api/admin/delete-product/{productId}").hasAuthority("ROLE_ADMIN")
                 .antMatchers( "/checkout", "/users",
