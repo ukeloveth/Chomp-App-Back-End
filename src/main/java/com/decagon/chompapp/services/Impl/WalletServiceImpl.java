@@ -3,6 +3,8 @@ package com.decagon.chompapp.services.Impl;
 
 
 import com.decagon.chompapp.dtos.WalletTransactionRequest;
+import com.decagon.chompapp.enums.TransactionType;
+import com.decagon.chompapp.exceptions.InsufficientFundsException;
 import com.decagon.chompapp.exceptions.WalletCannotBeAccessedException;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.models.Wallet;
@@ -66,4 +68,29 @@ public class WalletServiceImpl implements WalletService {
         walletRepository.save(walletSetup);
         walletTransactionRepository.save(walletTransaction);
     }
+
+
+    @Override
+    public ResponseEntity<String> withdrawFromWallet(WalletTransactionRequest walletTransactionRequest) throws InsufficientFundsException {
+
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByEmail(userEmail);
+
+        Wallet wallet = walletRepository.findWalletByUser_Email(user.get().getEmail());
+        if(wallet.getWalletBalance() > walletTransactionRequest.getAmount()){
+            double balance = wallet.getWalletBalance() - walletTransactionRequest.getAmount();
+            wallet.setWalletBalance(balance);
+            walletRepository.save(wallet);
+            WalletTransaction walletTransaction = new WalletTransaction();
+            walletTransaction.setTransactionType(TransactionType.WITHDRAWAL);
+            walletTransaction.setTransactionDate(Date.valueOf(LocalDate.now()));
+            walletTransaction.setAmount(walletTransactionRequest.getAmount());
+            walletTransaction.setWallet(wallet);
+            walletTransactionRepository.save(walletTransaction);
+        }else {
+            throw new InsufficientFundsException("insufficient Fund in wallet!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Transaction completed successfully \ncurrent wallet balance : "+wallet.getWalletBalance());
+    }
+
 }

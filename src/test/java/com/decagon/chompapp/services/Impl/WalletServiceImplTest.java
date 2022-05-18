@@ -3,6 +3,7 @@ package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dtos.WalletTransactionRequest;
 import com.decagon.chompapp.enums.TransactionType;
+import com.decagon.chompapp.exceptions.InsufficientFundsException;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.models.Wallet;
 import com.decagon.chompapp.models.WalletTransaction;
@@ -10,6 +11,7 @@ import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.repositories.WalletRepository;
 import com.decagon.chompapp.repositories.WalletTransactionRepository;
 import lombok.RequiredArgsConstructor;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.runner.RunWith;
@@ -105,6 +107,40 @@ class WalletServiceImplTest {
         assertThat(walletResponseEntity.getStatusCodeValue()).isEqualTo(200);
         assertThat(wallet.getWalletBalance()).isNotNull();
         assertThat(wallet.getWalletBalance()).isEqualTo(walletTransactionRequest.getAmount());
+
+    }
+
+    @Test
+    void testToWithdrawFromWallet() throws InsufficientFundsException {
+        user = User.builder()
+                .userId(1L)
+                .email("adekunle@gmail.com")
+                .password("12345")
+                .username("kay")
+                .firstName("James")
+                .build();
+
+        WalletTransactionRequest walletTransactionRequest = new WalletTransactionRequest();
+        walletTransactionRequest.setAmount(2000.0);
+        Wallet wallet = new Wallet();
+        wallet.setWalletBalance(3000.0);
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), List.of(new SimpleGrantedAuthority("PREMIUM")));
+
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        SecurityContextHolder.setContext(securityContext);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        Mockito.when(authentication.getName()).thenReturn(userDetails.getUsername());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.ofNullable(user));
+        when(walletRepository.findWalletByUser_Email(user.getEmail())).thenReturn(wallet);
+
+        ResponseEntity<String> wallet1 = walletService.withdrawFromWallet(walletTransactionRequest);
+
+        assertThat(wallet1.getStatusCodeValue()).isEqualTo(200);
+        assertThat(wallet.getWalletBalance()).isNotNull();
+        Assertions.assertThat(wallet.getWalletBalance()).isEqualTo(1000.0);
+
 
     }
 

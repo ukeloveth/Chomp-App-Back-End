@@ -68,6 +68,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/users/fetch-single-product").hasAnyAuthority("ROLE_ADMIN", "ROLE_PREMIUM", "ROLE_ANONYMOUS")
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 .antMatchers("api/v1/auth/wallet/fund-wallet").hasAuthority("ROLE_PREMIUM")
+                .antMatchers("api/v1/auth/wallet/withdrawal").hasAuthority("ROLE_PREMIUM")
                 .antMatchers("/orders").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/api/admin/delete-product/{productId}").hasAuthority("ROLE_ADMIN")
                 .antMatchers( "/checkout", "/users",

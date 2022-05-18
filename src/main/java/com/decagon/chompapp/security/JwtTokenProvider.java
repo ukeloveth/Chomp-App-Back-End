@@ -31,7 +31,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
 
-        return token;
+        return "Bearer " + token;
     }
 
     public String generateSignUpConfirmationToken(String email){
