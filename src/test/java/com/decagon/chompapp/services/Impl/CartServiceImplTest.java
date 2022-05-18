@@ -1,5 +1,6 @@
 package com.decagon.chompapp.services.Impl;
 
+import com.decagon.chompapp.dtos.CartDto;
 import com.decagon.chompapp.dtos.CartItemDto;
 import com.decagon.chompapp.models.*;
 import com.decagon.chompapp.repositories.CartItemRepository;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Optional;
 
+import static org.junit.Assert.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 
@@ -62,8 +64,9 @@ class CartServiceImplTest {
                 .productImage("jsdhjhgsdj")
                 .productName("Fries")
                 .productPrice(1500).category(category2).build();
+        user = User.builder().userId(1L).email("ukeloveth247@gmail.com").firstName("Loveth").build();
         userCart = Cart.builder().cartId(1L).user(user).cartItemList(new ArrayList<>()).cartTotal(0).quantity(0).build();
-        user = User.builder().userId(1L).email("ukeloveth247@gmail.com").firstName("Loveth").cart(userCart).build();
+        user.setCart(userCart);
         cartItem1 = CartItem.builder().cartItemId(1L).cart(userCart).product(product1).quantity(0).subTotal(0).build();
         cartItem2 = CartItem.builder().cartItemId(2L).cart(userCart).product(product2).quantity(0).subTotal(0).build();
         cartItemDto1 = CartItemDto.builder().cartId(cartItem1.getCartItemId())
@@ -85,11 +88,14 @@ class CartServiceImplTest {
         Mockito.when(SecurityContextHolder.getContext().getAuthentication().getName()).thenReturn(user.getUsername());
         Mockito.when(userRepository.findByUsernameOrEmail(any(), any())).thenReturn(Optional.of(user));
         Mockito.when(productRepository.findById(any())).thenReturn(Optional.of(product1));
-        Mockito.when(cartItemRepository.findByCartAndProduct(any(), any())).thenReturn(Optional.of(cartItem1));
+        Mockito.when(cartItemRepository.findByCartAndProduct(any(), any())).thenReturn(Optional.empty());
         Mockito.when(cartRepository.save(any())).thenReturn(userCart);
         Mockito.when(cartItemRepository.save(any())).thenReturn(cartItem1);
         ResponseEntity<CartItemDto> responseEntity = cartService.addToCart(1);
         Assertions.assertThat(Objects.requireNonNull(responseEntity.getBody()).getProductName()).isEqualTo(cartItemDto1.getProductName());
+        Mockito.when(cartItemRepository.findByCartAndProduct(any(), any())).thenReturn(Optional.of(cartItem1));
+        ResponseEntity<CartItemDto> responseEntity2 = cartService.addToCart(1);
+        Assertions.assertThat(Objects.requireNonNull(responseEntity2.getBody()).getProductName()).isEqualTo(cartItemDto1.getProductName());
     }
 
     @Test
@@ -133,5 +139,16 @@ class CartServiceImplTest {
         ResponseEntity<String> responseEntity = cartService.increaseQuantityInCart(1);
         Assertions.assertThat(responseEntity.getBody()).isEqualTo("Quantity increased by 1");
 
+    }
+    @Test
+    void shouldReturnACartDtoWhenViewCartMethodIsCalledOrThrowAnExceptionIfUserIsNotAuthorized(){
+        Mockito.when(userRepository.findByUsernameOrEmail(any(), any())).thenReturn(Optional.empty());
+        assertThrows(RuntimeException.class, ()-> cartService.viewCart());
+
+        Mockito.when(userRepository.findByUsernameOrEmail(any(), any())).thenReturn(Optional.of(user));
+        Mockito.when(cartRepository.findByUser(any())).thenReturn(userCart);
+        var responseEntity = cartService.viewCart();
+        Assertions.assertThat(responseEntity.getBody().getCartId()).isEqualTo(userCart.getCartId());
+        Assertions.assertThat(responseEntity.getBody()).isInstanceOf(CartDto.class);
     }
 }

@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService {
     }
     @Override
     public ResponseEntity<String> enterResetPassword(String token, HttpServletResponse response){
-        response.setHeader("reset-password", token);
+        response.setHeader("Authorization", token);
         return ResponseEntity.ok("Please enter new password.");
     }
 

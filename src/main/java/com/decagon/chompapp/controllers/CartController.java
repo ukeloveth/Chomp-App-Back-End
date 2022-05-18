@@ -1,5 +1,6 @@
 package com.decagon.chompapp.controllers;
 
+import com.decagon.chompapp.dtos.CartDto;
 import com.decagon.chompapp.dtos.CartItemDto;
 import com.decagon.chompapp.services.CartService;
 import lombok.AllArgsConstructor;
@@ -36,4 +37,10 @@ public class CartController {
     public ResponseEntity<String> removeCartItem(@PathVariable("cart-item-id") long cartItemId) {
         return cartService.removeCartItem(cartItemId);
     }
+
+    @GetMapping("/view-cart")
+    public ResponseEntity<CartDto> viewCart(){
+        return cartService.viewCart();
+    }
+
 }

@@ -72,6 +72,6 @@ public class UserController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordDto resetPasswordDto, HttpServletRequest request) {
-        return new ResponseEntity<>(userService.resetPassword(resetPasswordDto, request.getHeader("reset-password")), OK);
+        return new ResponseEntity<>(userService.resetPassword(resetPasswordDto, request.getHeader("Authorization")), OK);
     }
 }

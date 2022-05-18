@@ -1,4 +1,4 @@
-package com.decagon.chompapp.dto;
+package com.decagon.chompapp.dtos;
 
 import com.decagon.chompapp.models.Product;
 import com.decagon.chompapp.models.User;

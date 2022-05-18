@@ -54,16 +54,21 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
                 .antMatchers("/api/v1/auth/users/getAllProducts").permitAll()
                 .antMatchers("/favorite/**").permitAll()
-                .antMatchers("v3/api/-docs/**", "v2/api-docs/**", "swagger-ui/**",
-                        "swagger-resources/**", "/swagger-ui.html", "webjars/**", "swagger-ui/#/**")
-                .permitAll()
+                .antMatchers("/v2/api-docs",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**").permitAll()
                 .antMatchers("/home", "/company", "/faq",
                         "/contact", "/signup", "/confirmRegistration",
                         "/h2-console/**", "/login", "/logout", "/forgot_password",
                         "/api/v1/auth/login", "/verifyEmail", "/api/v1/auth/users/forgot-password",
                         "/api/v1/auth/users/enter-password", "/api/v1/auth/users/reset-password",
                         "/api/v1/auth/logout", "/cart/**")
-
                 .permitAll()
                 .antMatchers("/api/v1/auth/users/fetch-single-product").hasAnyAuthority("ROLE_ADMIN", "ROLE_PREMIUM", "ROLE_ANONYMOUS")
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")

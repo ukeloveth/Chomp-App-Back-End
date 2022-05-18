@@ -1,23 +1,27 @@
 package com.decagon.chompapp.services.Impl;
+import com.decagon.chompapp.dtos.CartDto;
+import com.decagon.chompapp.models.CartItem;
+import com.decagon.chompapp.services.CartService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
 import com.decagon.chompapp.dtos.CartItemDto;
 import com.decagon.chompapp.models.Cart;
-import com.decagon.chompapp.models.CartItem;
 import com.decagon.chompapp.models.Product;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repositories.CartItemRepository;
 import com.decagon.chompapp.repositories.CartRepository;
 import com.decagon.chompapp.repositories.ProductRepository;
 import com.decagon.chompapp.repositories.UserRepository;
-import com.decagon.chompapp.services.CartService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Transactional
 @AllArgsConstructor
 @Service
 public class CartServiceImpl implements CartService {
@@ -41,11 +45,9 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
     public ResponseEntity<CartItemDto> addToCart(long productId){
         User user = getLoggedInUser();
         return addToCartAndReturnDto(productId, user);
-
     }
 
     private ResponseEntity<CartItemDto> addToCartAndReturnDto(long productId, User user) {
@@ -61,15 +63,15 @@ public class CartServiceImpl implements CartService {
                 cartItem.setQuantity(1);
                 cartItem.setSubTotal(product.getProductPrice());
 
-                userCart.getCartItemList().add(cartItem);
+                var savedCartItem = cartItemRepository.save(cartItem);
+                userCart.getCartItemList().add(savedCartItem);
                 userCart.setQuantity(userCart.getQuantity() + 1);
-                return getCartItemDtoResponseEntity(userCart, cartItem);
+                return getCartItemDtoResponseEntity(userCart, savedCartItem);
             } else {
                 CartItem itemInCart = productAlreadyInCart.get();
                 itemInCart.setQuantity(itemInCart.getQuantity() + 1);
                 itemInCart.setSubTotal(itemInCart.getSubTotal() + product.getProductPrice());
-                CartItem savedCartItem = cartItemRepository.save(itemInCart);
-                return getCartItemDtoResponseEntity(userCart, savedCartItem);
+                return getCartItemDtoResponseEntity(userCart, itemInCart);
             }
         } else {
             throw new RuntimeException("Product not found");
@@ -104,7 +106,6 @@ public class CartServiceImpl implements CartService {
 
 
     @Override
-    @Transactional
     public ResponseEntity<String> clearCart() {
         User user = getLoggedInUser();
         Cart userCart = user.getCart();
@@ -116,9 +117,7 @@ public class CartServiceImpl implements CartService {
 
     }
 
-
     @Override
-    @Transactional
     public ResponseEntity<String> removeCartItem(
             long cartItemId){
         User user = getLoggedInUser();
@@ -133,10 +132,7 @@ public class CartServiceImpl implements CartService {
         }
     }
 
-
-
     @Override
-    @Transactional
     public ResponseEntity<String> reduceQuantityInCart(long cartItemId){
         User user = getLoggedInUser();
         Cart cart = user.getCart();
@@ -161,7 +157,6 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
     public ResponseEntity<String> increaseQuantityInCart(long cartItemId){
         User user = getLoggedInUser();
         Cart cart = user.getCart();
@@ -180,4 +175,30 @@ public class CartServiceImpl implements CartService {
         }
     }
 
+    @Override
+    public ResponseEntity<CartDto> viewCart(){
+        var user = getLoggedInUser();
+        if (user != null) {
+            Cart cart = cartRepository.findByUser(user);
+            return ResponseEntity.ok(convertCartToCartDto(cart));
+        }
+        throw new RuntimeException("Authorization failed");
+    }
+
+
+    private CartDto convertCartToCartDto(Cart cart){
+        CartDto cartDto = new CartDto();
+        cartDto.setCartId(cart.getCartId());
+        cartDto.setUserId(cart.getUser().getUserId());
+        cartDto.setCartTotal(cart.getCartTotal());
+        cartDto.setQuantity(cart.getQuantity());
+
+        List<CartItemDto> cartItemDtoList =
+                cart.getCartItemList()
+                        .stream()
+                        .map(this::convertCartItemToDto)
+                        .collect(Collectors.toList());
+        cartDto.setCartItemList(cartItemDtoList);
+        return cartDto;
+    }
 }

@@ -1,23 +1,24 @@
 package com.decagon.chompapp.services;
 
+import com.decagon.chompapp.dtos.CartDto;
 import com.decagon.chompapp.dtos.CartItemDto;
 import org.springframework.http.ResponseEntity;
-
 import javax.transaction.Transactional;
+import com.decagon.chompapp.models.CartItem;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 public interface CartService {
-    @Transactional
     ResponseEntity<CartItemDto> addToCart(long productId);
 
-    @Transactional
     ResponseEntity<String> clearCart();
 
-    @Transactional
     ResponseEntity<String> removeCartItem(long cartItemId);
 
-    @Transactional
     ResponseEntity<String> reduceQuantityInCart(long cartItemId);
 
-    @Transactional
     ResponseEntity<String> increaseQuantityInCart(long cartItemId);
+
+    ResponseEntity<CartDto> viewCart();
 }

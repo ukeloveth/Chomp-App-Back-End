@@ -1,5 +1,6 @@
 package com.decagon.chompapp.controllers;
 
+import com.decagon.chompapp.dtos.CartDto;
 import com.decagon.chompapp.dtos.CartItemDto;
 import com.decagon.chompapp.models.*;
 import com.decagon.chompapp.services.CartService;
@@ -41,6 +42,7 @@ class CartControllerUnitTests {
     Product product1, product2;
     User user;
     Cart userCart;
+    CartDto userCartDto;
     CartItem cartItem1, cartItem2;
     Category category1, category2;
     CartItemDto cartItemDto1;
@@ -60,6 +62,7 @@ class CartControllerUnitTests {
                 .productPrice(1500).category(category2).build();
         userCart = Cart.builder().cartId(1L).user(user).cartItemList(new ArrayList<>()).cartTotal(0).quantity(0).build();
         user = User.builder().userId(1L).email("ukeloveth247@gmail.com").firstName("Loveth").cart(userCart).build();
+        userCartDto = CartDto.builder().cartId(1L).userId(user.getUserId()).cartItemList(new ArrayList<>()).cartTotal(0).quantity(0).build();
         cartItem1 = CartItem.builder().cartItemId(1L).cart(userCart).product(product1).quantity(0).subTotal(0).build();
         cartItem2 = CartItem.builder().cartItemId(2L).cart(userCart).product(product2).quantity(0).subTotal(0).build();
         cartItemDto1 = CartItemDto.builder().cartId(cartItem1.getCartItemId())
@@ -125,5 +128,12 @@ class CartControllerUnitTests {
         String expectedResponse = objectMapper.writeValueAsString(responseEntity.getBody()).replace("\"","");
         String actualResponse = mvcResult.getResponse().getContentAsString();
         assertEquals(expectedResponse,actualResponse);
+    }
+    @Test
+    void shouldCallAGetMappingMethodAndReturnAResponseEntityOfCartDto() throws Exception {
+        ResponseEntity<CartDto> responseEntity = ResponseEntity.ok(userCartDto);
+        Mockito.when(cartService.viewCart()).thenReturn(responseEntity);
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/cart/view-cart",1L))
+                .andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
     }
 }
