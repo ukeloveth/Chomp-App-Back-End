@@ -2,15 +2,16 @@ package com.decagon.chompapp.controllers;
 
 import com.decagon.chompapp.dtos.*;
 import com.decagon.chompapp.dtos.EditUserDto;
+import com.decagon.chompapp.dtos.ProductDto;
 import com.decagon.chompapp.dtos.PasswordDto;
 import com.decagon.chompapp.dtos.ProductResponse;
 import com.decagon.chompapp.services.ProductServices;
 import com.decagon.chompapp.services.UserService;
 import com.decagon.chompapp.utils.AppConstants;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.decagon.chompapp.dtos.PasswordDto;
 
 import javax.mail.MessagingException;
 import javax.servlet.ServletException;
@@ -52,6 +53,11 @@ public class UserController {
     @PutMapping("/password-update")
     public ResponseEntity<String> login(@RequestBody PasswordDto passwordDto) {
         return userService.updatePassword(passwordDto);
+    }
+
+    @GetMapping("/fetch-single-product/{id}")
+    public ResponseEntity<ProductDto> fetchSingleProduct(@PathVariable Long id) {
+        return productServices.fetchSingleProductById(id);
     }
 
     @PostMapping("/forgot-password")

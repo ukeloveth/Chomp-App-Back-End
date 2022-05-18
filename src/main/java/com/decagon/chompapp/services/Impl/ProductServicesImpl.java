@@ -3,7 +3,9 @@ package com.decagon.chompapp.services.Impl;
 import com.decagon.chompapp.dtos.ProductDto;
 import com.decagon.chompapp.dtos.ProductResponse;
 import com.decagon.chompapp.models.Product;
+import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repositories.ProductRepository;
+import com.decagon.chompapp.repositories.UserRepository;
 import com.decagon.chompapp.services.ProductServices;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +27,8 @@ import java.util.stream.Collectors;
 public class ProductServicesImpl implements ProductServices {
 
     private final ProductRepository productRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<ProductResponse> getAllProducts(int pageNo, int pageSize, String sortBy, String sortDir, String filterBy, String filterParam, String startRange, String endRange) {
@@ -57,6 +62,16 @@ public class ProductServicesImpl implements ProductServices {
         }
     }
 
+    @Override
+    public ResponseEntity<ProductDto> fetchSingleProductById(Long productId) {
+        String loggedInUserName = SecurityContextHolder.getContext().getAuthentication().getName();
+        userRepository.findByEmail(loggedInUserName).orElseThrow(() -> new RuntimeException("User not found."));
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found."));
+        ProductDto productDto = convertProductEntityToDto(product);
+        return new ResponseEntity<>(productDto, HttpStatus.OK);
+    }
+
+
     private ResponseEntity<ProductResponse> getProductResponseEntity(Page<Product> products) {
         List<Product> listOfProducts = products.getContent();
         var content =  listOfProducts.stream().map(this::convertProductEntityToDto).collect(Collectors.toList());
@@ -87,6 +102,4 @@ public class ProductServicesImpl implements ProductServices {
                 .categoryName(product.getCategory().getCategoryName())
                 .build();
     }
-
-
 }
