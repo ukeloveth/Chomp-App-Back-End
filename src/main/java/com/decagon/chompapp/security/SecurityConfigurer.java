@@ -50,6 +50,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/api/admin/create-product", "/api/admin/upload-image", "/api/admin/update-product-image/{id}", "/api/admin/update-product/{id}").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
                 .antMatchers("/api/v1/auth/users/getAllProducts").permitAll()
