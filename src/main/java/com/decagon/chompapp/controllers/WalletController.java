@@ -28,4 +28,9 @@ public class WalletController {
 
         return walletService.withdrawFromWallet(walletTransactionRequest);
     }
+    @PostMapping("/process-payment")
+    public ResponseEntity<String> processPayment(@RequestBody WalletTransactionRequest walletTransactionRequest){
+        return walletService.processPayment(walletTransactionRequest);
+    }
+
 }
