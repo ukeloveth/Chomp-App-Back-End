@@ -121,4 +121,13 @@ public class WalletServiceImpl implements WalletService {
         }
     }
 
+    @Override
+    public ResponseEntity<String> checkWalletBalance() {
+        String userEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<User> user = userRepository.findByEmail(userEmail);
+        Optional<Wallet> wallet = walletRepository.findWalletByUser_Email2(user.get().getEmail());
+            Wallet wallet1 = wallet.orElseThrow(() -> new WalletCannotBeAccessedException("Wallet balance cannot be accessed"));
+            return ResponseEntity.status(HttpStatus.OK).body("Wallet balance is : " + wallet1.getWalletBalance());
+    }
+
 }
