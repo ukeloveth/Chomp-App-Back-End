@@ -92,6 +92,7 @@ public class UserServiceImpl implements UserService {
         List<Product> allFavoriteProductsByUser = productRepository.findAllFavoriteProductsByUserId(user.getUserId());
         List<ProductDto> productDto = allFavoriteProductsByUser.stream()
                 .map(product -> ProductDto.builder()
+                        .productId(product.getProductId())
                         .productName(product.getProductName())
                         .productPrice(product.getProductPrice())
                         .productImage(product.getProductImage())
