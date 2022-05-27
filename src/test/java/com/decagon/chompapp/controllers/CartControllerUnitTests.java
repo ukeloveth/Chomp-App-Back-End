@@ -4,6 +4,7 @@ import com.decagon.chompapp.dtos.CartDto;
 import com.decagon.chompapp.dtos.CartItemDto;
 import com.decagon.chompapp.models.*;
 import com.decagon.chompapp.services.CartService;
+import com.decagon.chompapp.services.Impl.CartServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class CartControllerUnitTests {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private CartService cartService;
+    private CartServiceImpl cartService;
 
     @Autowired
     ObjectMapper objectMapper;
