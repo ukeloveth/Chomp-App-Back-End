@@ -131,7 +131,7 @@ public class AdminServiceImpl implements AdminService {
 
         List<Order> content = orders.getContent();
         OrderResponse orderResponse = OrderResponse.builder()
-                .content(content)
+//                .content(content)
                 .pageNo(orders.getNumber())
                 .pageSize(orders.getSize())
                 .totalPages(orders.getTotalPages())

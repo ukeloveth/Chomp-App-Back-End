@@ -22,4 +22,6 @@ public class OrderDto {
     @Enumerated(EnumType.STRING)
     private ShippingMethod shippingMethod;
     private ShippingAddressDto shippingAddress;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
 }

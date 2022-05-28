@@ -31,7 +31,6 @@ public class Order {
 
     private Double totalPrice;
 
-
     private Double flatRate;
 
     @Enumerated(EnumType.STRING)
@@ -45,7 +44,6 @@ public class Order {
 
     @OneToOne
     private ShippingAddress shippingAddress;
-
 
     @OneToMany(fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
