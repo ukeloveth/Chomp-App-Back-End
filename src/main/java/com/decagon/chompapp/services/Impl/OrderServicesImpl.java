@@ -1,8 +1,10 @@
 package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dtos.OrderDto;
+import com.decagon.chompapp.dtos.OrderDtoForStatusUpdate;
 import com.decagon.chompapp.dtos.OrderResponse;
 import com.decagon.chompapp.dtos.OrderResponseDto;
+import com.decagon.chompapp.enums.OrderStatus;
 import com.decagon.chompapp.exceptions.UserNotFoundException;
 import com.decagon.chompapp.models.Order;
 import com.decagon.chompapp.models.Product;
@@ -45,6 +47,22 @@ public class OrderServicesImpl implements OrderServices {
             Pageable pageable = PageRequest.of(pageNo, pageSize,sort);
             Page<Order> orders = orderRepository.findAll(pageable);
             return getOrderResponseEntity(orders);
+        }
+        throw  new UserNotFoundException("User does not exist in the database");
+    }
+
+    @Override
+    public ResponseEntity<OrderResponseDto> updateOrderStatus (Long orderId, OrderDtoForStatusUpdate orderDtoForStatusUpdate) {
+        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username = principal.getUsername();
+        Optional<User> currentUser = userRepository.findByUsername(username);
+        if (currentUser.isPresent()) {
+            Optional<Order> orderToUpdate = orderRepository.findById(orderId);
+            if (OrderStatus.DELIVERED.equals(orderDtoForStatusUpdate.getStatus())) orderToUpdate.orElseThrow().setStatus(OrderStatus.DELIVERED);
+            if (OrderStatus.CANCEL.equals(orderDtoForStatusUpdate.getStatus())) orderToUpdate.orElseThrow().setStatus(OrderStatus.CANCEL);
+            if (OrderStatus.PENDING.equals(orderDtoForStatusUpdate.getStatus())) orderToUpdate.orElseThrow().setStatus(OrderStatus.PENDING);
+            orderRepository.save(orderToUpdate.orElseThrow());
+            return ResponseEntity.ok(convertOrderEntityToOrderResponseDto(orderToUpdate.orElseThrow()));
         }
         throw  new UserNotFoundException("User does not exist in the database");
     }

@@ -1,14 +1,13 @@
 package com.decagon.chompapp.controllers;
 
-import com.decagon.chompapp.dtos.OrderDto;
-import com.decagon.chompapp.dtos.OrderResponse;
-import com.decagon.chompapp.dtos.ProductDto;
+import com.decagon.chompapp.dtos.*;
 import com.decagon.chompapp.models.Order;
 import com.decagon.chompapp.models.Product;
 import com.decagon.chompapp.models.ProductImage;
 import com.decagon.chompapp.services.AdminService;
 import com.decagon.chompapp.services.CloudinaryService;
 import com.decagon.chompapp.services.Impl.AdminServiceImpl;
+import com.decagon.chompapp.services.OrderServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,11 +23,14 @@ public class AdminServiceController {
 
     private final CloudinaryService cloudinaryService;
 
+    private final OrderServices orderServices;
+
 
     @Autowired
-    public AdminServiceController(AdminService adminService, CloudinaryService cloudinaryService) {
+    public AdminServiceController(AdminService adminService, CloudinaryService cloudinaryService, OrderServices orderServices) {
         this.adminService = adminService;
         this.cloudinaryService = cloudinaryService;
+        this.orderServices = orderServices;
     }
 
     @PostMapping("create-product")
@@ -63,6 +65,11 @@ public class AdminServiceController {
             @RequestParam(value = "pageSize", defaultValue = "10", required = false) int pageSize
     ) {
         return adminService.viewAllOrders(pageNo,pageSize);
+    }
+
+    @PutMapping("view-all-orders/{orderId}/update-order-status")
+    public ResponseEntity<OrderResponseDto> updateOrderStatus (@PathVariable("orderId") Long orderId, @RequestBody OrderDtoForStatusUpdate orderDtoForStatusUpdate) {
+        return orderServices.updateOrderStatus(orderId,orderDtoForStatusUpdate);
     }
 
 }

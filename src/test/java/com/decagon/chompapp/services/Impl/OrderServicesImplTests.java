@@ -1,6 +1,7 @@
 package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dtos.OrderDto;
+import com.decagon.chompapp.dtos.OrderDtoForStatusUpdate;
 import com.decagon.chompapp.dtos.ShippingAddressDto;
 import com.decagon.chompapp.enums.OrderStatus;
 import com.decagon.chompapp.enums.PaymentMethod;
@@ -10,6 +11,7 @@ import com.decagon.chompapp.models.OrderItem;
 import com.decagon.chompapp.models.User;
 import com.decagon.chompapp.repositories.OrderRepository;
 import com.decagon.chompapp.repositories.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -59,13 +61,9 @@ class OrderServicesImplTests {
 
     List<OrderItem> orderItems= new ArrayList<>();
 
-    ShippingAddressDto shippingAddress = new ShippingAddressDto();
-
-    OrderDto orderDto = OrderDto.builder()
-            .paymentType(PaymentMethod.PAY_WITH_CARD)
-            .shippingAddress(shippingAddress)
-            .shippingMethod(ShippingMethod.OVERNIGHT_SHIPPING)
-            .status(OrderStatus.PENDING).build();
+    OrderDtoForStatusUpdate orderDtoForStatusUpdate = OrderDtoForStatusUpdate.builder()
+            .status(OrderStatus.PENDING)
+            .build();
 
     @BeforeEach
     void setUp() {
@@ -98,5 +96,21 @@ class OrderServicesImplTests {
         String sortDir = "asc";
         orderServicesImpl.viewOrderHistoryForAPremiumUser(0,10,sortBy,sortDir);
         verify(orderRepository).findAll(pageable);
+    }
+
+    @Test
+    void updateOrderStatusAdmin() {
+        Mockito.when(orderRepository.findById(anyLong())).thenReturn(Optional.ofNullable(newOrder));
+        Mockito.when(orderRepository.save(any())).thenReturn(newOrder);
+        orderServicesImpl.updateOrderStatus(1L,orderDtoForStatusUpdate);
+        verify(orderRepository).findById(anyLong());
+        verify(orderRepository).save(any());
+        Assertions.assertEquals("DELIVERED",OrderStatus.DELIVERED.toString());
+        orderDtoForStatusUpdate.setStatus(OrderStatus.PENDING);
+        orderServicesImpl.updateOrderStatus(1L,orderDtoForStatusUpdate);
+        Assertions.assertEquals("PENDING",OrderStatus.PENDING.toString());
+        orderDtoForStatusUpdate.setStatus(OrderStatus.CANCEL);
+        orderServicesImpl.updateOrderStatus(1L,orderDtoForStatusUpdate);
+        Assertions.assertEquals("CANCEL",OrderStatus.CANCEL.toString());
     }
 }
