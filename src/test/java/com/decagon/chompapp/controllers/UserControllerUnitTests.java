@@ -6,6 +6,7 @@ import com.decagon.chompapp.enums.PaymentMethod;
 import com.decagon.chompapp.models.*;
 import com.decagon.chompapp.services.OrderServices;
 import com.decagon.chompapp.services.ProductServices;
+import com.decagon.chompapp.services.paystack.PaymentServiceImpl;
 import com.decagon.chompapp.utils.AppConstants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -58,6 +59,9 @@ public class UserControllerUnitTests {
 
     @MockBean
     private ProductServices productServices;
+
+    @MockBean
+    private PaymentServiceImpl paymentService;
 
     @MockBean
     private OrderServices orderServices;
