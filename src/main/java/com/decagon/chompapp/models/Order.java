@@ -45,6 +45,7 @@ public class Order {
     @OneToOne
     private ShippingAddress shippingAddress;
 
+
     @OneToMany(fetch = FetchType.EAGER)
     private List<OrderItem> orderItems;
 

@@ -1,7 +1,9 @@
 package com.decagon.chompapp.services.Impl;
 
 import com.decagon.chompapp.dtos.OrderResponse;
+import com.decagon.chompapp.dtos.OrderResponseDto;
 import com.decagon.chompapp.dtos.ProductDto;
+import com.decagon.chompapp.exceptions.OrderNotFoundException;
 import com.decagon.chompapp.exceptions.ProductNotFoundException;
 import com.decagon.chompapp.models.Category;
 import com.decagon.chompapp.models.Order;
@@ -22,6 +24,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static com.decagon.chompapp.services.Impl.OrderServicesImpl.getOrderResponseDto;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -129,9 +134,10 @@ public class AdminServiceImpl implements AdminService {
         Pageable pageable = PageRequest.of(pageNo, pageSize);
         Page<Order> orders = orderRepository.findAll(pageable);
 
-        List<Order> content = orders.getContent();
+        List<Order> orderList = orders.getContent();
+        List<OrderResponseDto> content =  orderList.stream().map(this::convertOrderEntityToOrderResponseDto).collect(Collectors.toList());
         OrderResponse orderResponse = OrderResponse.builder()
-//                .content(content)
+                .content(content)
                 .pageNo(orders.getNumber())
                 .pageSize(orders.getSize())
                 .totalPages(orders.getTotalPages())
@@ -139,6 +145,16 @@ public class AdminServiceImpl implements AdminService {
                 .last(orders.isLast())
                 .build();
             return ResponseEntity.ok(orderResponse);
+    }
+
+    @Override
+    public ResponseEntity<OrderResponseDto> viewParticularOrder(long orderId) {
+        Order order = orderRepository.findOrderByOrderId(orderId).orElseThrow(() -> new OrderNotFoundException("Order does not exist"));
+        return ResponseEntity.ok(convertOrderEntityToOrderResponseDto(order));
+    }
+
+    private OrderResponseDto convertOrderEntityToOrderResponseDto(Order order) {
+        return getOrderResponseDto(order);
     }
 
 }

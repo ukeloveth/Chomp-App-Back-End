@@ -21,6 +21,7 @@ public class ShippingAddressDto {
     @Column(nullable = false)
     private String recipientName;
 
+
     private String streetAddress;
 
     @Email
@@ -30,8 +31,11 @@ public class ShippingAddressDto {
 
     private String city;
 
+
+
     @Size(max = 14)
     private String phoneNumber;
+
 
     private Boolean isDefaultShippingAddress;
 }

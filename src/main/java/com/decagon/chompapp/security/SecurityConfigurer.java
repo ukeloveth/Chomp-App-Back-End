@@ -59,7 +59,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .permitAll()
 
 
-                .antMatchers("/api/admin/create-product", "/api/admin/upload-image", "/api/admin/update-product-image/{id}", "/api/admin/update-product/{id}").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/api/admin/create-product", "/api/admin/upload-image", "/api/admin/update-product-image/{id}", "/api/admin/update-product/{id}", "/api/admin/view-all-orders", "/api/admin/view-particular-order/{orderId}").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
                 .antMatchers("/**").permitAll()
                 .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
