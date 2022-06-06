@@ -146,15 +146,13 @@ public class AdminServiceImpl implements AdminService {
                 .build();
             return ResponseEntity.ok(orderResponse);
     }
+    private OrderResponseDto convertOrderEntityToOrderResponseDto(Order order) {
+        return getOrderResponseDto(order);
+    }
 
     @Override
     public ResponseEntity<OrderResponseDto> viewParticularOrder(long orderId) {
         Order order = orderRepository.findOrderByOrderId(orderId).orElseThrow(() -> new OrderNotFoundException("Order does not exist"));
         return ResponseEntity.ok(convertOrderEntityToOrderResponseDto(order));
     }
-
-    private OrderResponseDto convertOrderEntityToOrderResponseDto(Order order) {
-        return getOrderResponseDto(order);
-    }
-
 }

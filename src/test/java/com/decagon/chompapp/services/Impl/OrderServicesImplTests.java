@@ -74,15 +74,9 @@ class OrderServicesImplTests {
                 .username("james@mail.com")
                 .firstName("James")
                 .build();
-        userDetails = new org.springframework.security.core.userdetails.User(user1.getEmail(), user1.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_PREMIUM")));
-        Authentication authentication = mock(Authentication.class);
-        SecurityContext securityContext = mock(SecurityContext.class);
-        when(securityContext.getAuthentication()).thenReturn(authentication);
-        SecurityContextHolder.setContext(securityContext);
-        Mockito.when(authentication.getPrincipal()).thenReturn(userDetails);
-        Mockito.when(userRepository.findByUsername(anyString())).thenReturn(Optional.ofNullable(user1));
 
-        newOrder = Order.builder().orderId(1L).flatRate(0.00).totalPrice(1000.00).orderItems(orderItems).build();
+
+        newOrder = Order.builder().orderId(1L).flatRate(0.00).totalPrice(1000.00).orderItems(orderItems).user(user1).build();
         List<Order> listOfOrders = new ArrayList<>();
         listOfOrders.add(newOrder);
         pageable = PageRequest.of(0, 10, Sort.by("orderId"));
@@ -91,11 +85,19 @@ class OrderServicesImplTests {
 
     @Test
     void viewOrderHistoryForAPremiumUser() {
-        Mockito.when(orderRepository.findAll(pageable)).thenReturn(orders);
+        userDetails = new org.springframework.security.core.userdetails.User(user1.getEmail(), user1.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_PREMIUM")));
+        Authentication authentication = mock(Authentication.class);
+        SecurityContext securityContext = mock(SecurityContext.class);
+        when(securityContext.getAuthentication()).thenReturn(authentication);
+        SecurityContextHolder.setContext(securityContext);
+        Mockito.when(authentication.getPrincipal()).thenReturn(userDetails);
+        Mockito.when(userRepository.findByUsernameOrEmail(anyString(), anyString())).thenReturn(Optional.ofNullable(user1));
+
+        Mockito.when(orderRepository.findAllByUser(pageable, user1)).thenReturn(orders);
         String sortBy = "orderId";
         String sortDir = "asc";
         orderServicesImpl.viewOrderHistoryForAPremiumUser(0,10,sortBy,sortDir);
-        verify(orderRepository).findAll(pageable);
+        verify(orderRepository).findAllByUser(pageable, user1);
     }
 
     @Test

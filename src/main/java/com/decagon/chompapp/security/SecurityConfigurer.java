@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -57,11 +56,13 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("v3/api/-docs/**", "v2/api-docs/**",
                         "swagger-resources/**", "webjars/**")
                 .permitAll()
-
+                .antMatchers("/api/admin/create-product", "/api/admin/upload-image", "/api/admin/update-product-image/{id}", "/api/admin/update-product/{id}", "/api/admin/view-all-orders").hasAuthority("ROLE_ADMIN")
 
                 .antMatchers("/api/admin/create-product", "/api/admin/upload-image", "/api/admin/update-product-image/{id}", "/api/admin/update-product/{id}", "/api/admin/view-all-orders", "/api/admin/view-particular-order/{orderId}").hasAuthority("ROLE_ADMIN")
+
                 .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
-                .antMatchers("/**").permitAll()
+                .antMatchers("/api/v1/auth/users/orders").hasAuthority("ROLE_PREMIUM")
+                .antMatchers("/api/admin/view-all-orders/{orderId}/update-order-status").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/api/v1/auth/users/getAllProducts/**").permitAll()
                 .antMatchers("/api/v1/auth/users/getAllProducts").permitAll()
                 .antMatchers("/favorite/**").permitAll()
@@ -82,7 +83,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/api/v1/auth/users/enter-password", "/api/v1/auth/users/reset-password",
                         "/api/v1/auth/logout", "/cart/**")
                 .permitAll()
-                .antMatchers("/api/v1/auth/users/fetch-single-product").hasAnyAuthority("ROLE_ADMIN", "ROLE_PREMIUM", "ROLE_ANONYMOUS")
+                .antMatchers("/api/v1/auth/users/fetch-single-product/{id}").hasAnyAuthority("ROLE_ADMIN", "ROLE_PREMIUM", "ROLE_ANONYMOUS")
                 .antMatchers("/admin").hasAuthority("ROLE_ADMIN")
                 .antMatchers("api/v1/auth/wallet/fund-wallet").hasAuthority("ROLE_PREMIUM")
                 .antMatchers("api/v1/auth/wallet/withdrawal").hasAuthority("ROLE_PREMIUM")

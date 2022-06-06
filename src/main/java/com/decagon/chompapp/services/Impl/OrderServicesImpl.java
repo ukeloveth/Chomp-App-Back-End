@@ -41,30 +41,24 @@ public class OrderServicesImpl implements OrderServices {
     public ResponseEntity<OrderResponse> viewOrderHistoryForAPremiumUser(int pageNo, int pageSize, String sortBy, String sortDir) {
         UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String username = principal.getUsername();
-        Optional<User> currentUser = userRepository.findByUsername(username);
-        if (currentUser.isPresent()) {
+        User currentUser = userRepository.findByUsernameOrEmail(username, username).orElseThrow( () ->
+         new UserNotFoundException("User does not exist in the database"));
             Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name())  ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
             Pageable pageable = PageRequest.of(pageNo, pageSize,sort);
-            Page<Order> orders = orderRepository.findAll(pageable);
+            Page<Order> orders = orderRepository.findAllByUser(pageable, currentUser);
             return getOrderResponseEntity(orders);
-        }
-        throw  new UserNotFoundException("User does not exist in the database");
     }
 
     @Override
     public ResponseEntity<OrderResponseDto> updateOrderStatus (Long orderId, OrderDtoForStatusUpdate orderDtoForStatusUpdate) {
-        UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String username = principal.getUsername();
-        Optional<User> currentUser = userRepository.findByUsername(username);
-        if (currentUser.isPresent()) {
+
             Optional<Order> orderToUpdate = orderRepository.findById(orderId);
             if (OrderStatus.DELIVERED.equals(orderDtoForStatusUpdate.getStatus())) orderToUpdate.orElseThrow().setStatus(OrderStatus.DELIVERED);
             if (OrderStatus.CANCEL.equals(orderDtoForStatusUpdate.getStatus())) orderToUpdate.orElseThrow().setStatus(OrderStatus.CANCEL);
             if (OrderStatus.PENDING.equals(orderDtoForStatusUpdate.getStatus())) orderToUpdate.orElseThrow().setStatus(OrderStatus.PENDING);
             orderRepository.save(orderToUpdate.orElseThrow());
             return ResponseEntity.ok(convertOrderEntityToOrderResponseDto(orderToUpdate.orElseThrow()));
-        }
-        throw  new UserNotFoundException("User does not exist in the database");
+
     }
 
     private ResponseEntity<OrderResponse> getOrderResponseEntity(Page<Order> orders) {
