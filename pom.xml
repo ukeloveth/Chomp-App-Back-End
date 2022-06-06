@@ -169,4 +169,11 @@
         </plugins>
     </build>
 
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>CedarExpress App</name>
+            <url>https://maven.pkg.github.com/decadevs/CedarXpress-Liveproject-Java010</url>
+        </repository>
+    </distributionManagement>
 </project>
