@@ -173,7 +173,7 @@
         <repository>
             <id>github</id>
             <name>CedarExpress App</name>
-            <url>https://maven.pkg.github.com/decadevs/CedarXpress-Liveproject-Java010</url>
+            <url>https://maven.pkg.github.com/decadevs/chomp-liveproject-java010</url>
         </repository>
     </distributionManagement>
 </project>
