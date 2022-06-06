@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.decagon</groupId>
-    <artifactId>ChompApp</artifactId>
+    <artifactId>chompapp</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>ChompApp</name>
     <description>ChompApp</description>
