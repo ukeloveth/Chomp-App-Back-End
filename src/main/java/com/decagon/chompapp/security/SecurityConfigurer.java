@@ -41,7 +41,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 //        super.configure(http);
         http
-                .csrf().disable()
+                .csrf().disable().cors().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .and()
@@ -105,6 +105,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();
 
     }
+
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
