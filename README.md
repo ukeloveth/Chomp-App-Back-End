@@ -7,7 +7,7 @@ Users of this application will be able to browse through the application to find
 Getting Started
 =====
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
--a Local machine preferrably a mac book pro.
+-a Local machine preferrably a mac book pro
 
 
 Prerequisites
